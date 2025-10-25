@@ -1,256 +1,558 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Make a Event</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Make a Event — Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; display: flex; height: 100vh;
-    background: radial-gradient(circle at top, #1a1a1a, #0d0d0d);
-    color: #f0f0f0; font-family: 'Poppins', sans-serif;
+  :root{
+    --bg: #ffffff;
+    --panel: #f6f7fb;
+    --text: #0b1220;
+    --muted: #5b6b78;
+    --accent: #0066ff;
+    --card: #ffffff;
+    --glass: rgba(10,10,10,0.04);
   }
-  .left { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .right {
-    flex: 1; background: rgba(40,40,40,0.9);
-    padding: 15px; display: flex; flex-direction: column; gap: 10px; border-left: 1px solid #333; overflow-y: auto;
+  [data-theme="dark"]{
+    --bg:#0b0f14;
+    --panel:#0e1317;
+    --text:#e8eef6;
+    --muted:#9fb0c3;
+    --accent:#00aaff;
+    --card:#0b1115;
+    --glass: rgba(255,255,255,0.03);
   }
-  input, select, textarea {
-    width: 100%; background: #222; color: #fff;
-    border: 1px solid #555; border-radius: 6px;
-    padding: 6px; font-size: 14px;
-  }
-  img { width: 160px; height: 160px; object-fit: cover; border-radius: 10px; border: 2px solid #444; }
-  .result { background: #222; padding: 10px 15px; border-radius: 10px; margin-top: 10px; }
-  button {
-    background: #0077ff; border: none; border-radius: 6px; color: white;
-    font-weight: 600; padding: 8px; cursor: pointer; transition: 0.2s;
-  }
-  button:hover { background: #005fe0; }
-  #summary, #tutorial {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-    z-index: 10; padding: 20px;
-  }
-  #summary { display: none; }
-  #summary h2 { color: #00aaff; }
 
-  .money {
-    background: #111; padding: 8px 12px; border-radius: 8px;
-    text-align: center; margin-bottom: 10px; font-weight: bold;
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter,system-ui,Arial;
+    background: radial-gradient(1200px 600px at 10% 10%, rgba(0,170,255,0.04), transparent),
+                var(--bg);
+    color:var(--text); -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; gap:18px; padding:18px;
   }
-  .shop {
-    margin-top: 20px; border-top: 1px solid #333; padding-top: 10px;
+
+  /* Layout */
+  .app {
+    width:100%; display:grid; grid-template-columns:380px 1fr; gap:18px; margin:auto;
+    max-width:1200px;
   }
-  .shop-item {
-    background: #222; border-radius: 8px; padding: 8px;
-    margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+
+  /* LEFT: Form */
+  .panel {
+    background:linear-gradient(180deg, var(--panel), rgba(0,0,0,0));
+    border-radius:12px; padding:16px; box-shadow: 0 6px 20px var(--glass);
+    display:flex; flex-direction:column; gap:12px;
   }
-  .rarity {
-    font-weight: bold;
-    text-shadow: 0 0 5px currentColor;
+  .header {
+    display:flex; align-items:center; justify-content:space-between;
   }
-  .r-common { color: #00ff6a; }
-  .r-rare { color: #00aaff; }
-  .r-epic { color: #b700ff; }
-  .r-leg { color: #ffea00; }
-  .r-myth { color: #ff3b3b; }
-  .r-rich {
-    background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-    -webkit-background-clip: text; color: transparent; font-weight: bold;
+  .title { font-weight:700; font-size:18px; }
+  .sub { font-size:13px; color:var(--muted) }
+
+  label { display:block; font-size:13px; margin-top:6px; color:var(--muted); }
+  input[type="text"], input[type="number"], textarea, select {
+    width:100%; padding:10px 12px; margin-top:6px; border-radius:8px;
+    border:1px solid rgba(0,0,0,0.06); background:var(--card); color:var(--text);
+    outline:none; font-size:14px;
   }
-  .r-pro {
-    background: linear-gradient(90deg, #aaa, #111);
-    -webkit-background-clip: text; color: transparent;
+  textarea { resize:vertical; min-height:78px; max-height:180px; }
+
+  .row { display:flex; gap:8px; }
+  .row .col { flex:1; }
+
+  .mini {
+    display:flex; gap:8px; align-items:center; justify-content:space-between;
+    padding:8px; border-radius:8px; background:var(--card);
+  }
+  .btn {
+    background:var(--accent); color: white; border: none; padding:10px 12px;
+    border-radius:8px; cursor:pointer; font-weight:600;
+  }
+  .btn.ghost { background:transparent; color:var(--accent); border:1px solid rgba(0,0,0,0.06); }
+
+  .preview {
+    display:flex; gap:12px; align-items:center;
+  }
+  .logo {
+    width:96px; height:96px; border-radius:10px; background:linear-gradient(180deg,#111,#222);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
+    border:1px solid rgba(0,0,0,0.06);
+  }
+  .logo img { width:100%; height:100%; object-fit:cover; }
+
+  .stats { display:flex; gap:8px; flex-direction:column; }
+  .stat { font-size:13px; color:var(--muted) }
+
+  /* Right: Inventory */
+  .inventory-header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .search { padding:8px 10px; border-radius:10px; width:220px; border:1px solid rgba(0,0,0,0.06); background:var(--card); color:var(--text); }
+
+  .grid {
+    margin-top:12px; display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px;
+  }
+  .card {
+    border-radius:10px; padding:12px; background:linear-gradient(180deg,var(--card), rgba(0,0,0,0.02));
+    box-shadow: 0 6px 18px var(--glass); display:flex; gap:10px; flex-direction:column;
+  }
+  .card .top { display:flex; gap:10px; align-items:center; }
+  .card .meta { display:flex; flex-direction:column; gap:4px; flex:1; }
+  .name { font-weight:600; font-size:15px; }
+  .desc { font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; max-height:36px; }
+
+  .badge { padding:6px 8px; border-radius:999px; font-weight:700; font-size:12px; display:inline-block; }
+
+  /* rarity colors */
+  .r-common { color:#0f9d58; border:1px solid rgba(15,157,88,0.12); }
+  .r-rare { color:#1e88e5; border:1px solid rgba(30,136,229,0.12); }
+  .r-epic { color:#8e24aa; border:1px solid rgba(142,36,170,0.12); }
+  .r-leg { color:#fbc02d; border:1px solid rgba(251,192,45,0.12); }
+  .r-myth { color:#e53935; border:1px solid rgba(229,57,53,0.12); }
+  .r-rich { background:linear-gradient(90deg, #ff3b3b, #ff8a00, #ffd600, #00c853, #00b0ff, #651fff); -webkit-background-clip:text; color:transparent; font-weight:800; }
+  .r-pro { background:linear-gradient(90deg,#bbbbbb,#111111); -webkit-background-clip:text; color:transparent; font-weight:800; }
+
+  .card-footer { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+  .small { font-size:13px; color:var(--muted) }
+
+  /* modal */
+  .modal-back { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.55); z-index:30; padding:20px; }
+  .modal { width:100%; max-width:720px; background:var(--panel); border-radius:12px; padding:18px; box-shadow:0 18px 40px rgba(0,0,0,0.6); color:var(--text); }
+  .modal .row { align-items:flex-start; }
+  .modal .logo{ width:160px; height:160px; }
+  .modal .details { flex:1; }
+
+  /* footer small controls */
+  .controls { display:flex; gap:8px; align-items:center; justify-content:flex-end; margin-top:6px; }
+  .muted { color:var(--muted); font-size:13px; }
+
+  @media (max-width:980px){
+    .app { grid-template-columns: 1fr; padding-bottom:40px; }
+    .panel { order:2 }
   }
 </style>
 </head>
-<body>
+<body data-theme="light">
+  <div class="app">
+    <!-- LEFT: create -->
+    <section class="panel">
+      <div class="header">
+        <div>
+          <div class="title">Créer un événement</div>
+          <div class="sub">Crée ta carte d'événement et ajoute-la à ta collection</div>
+        </div>
+        <div>
+          <button id="themeToggle" class="btn btn-small">Mode Sombre</button>
+        </div>
+      </div>
 
-<div id="tutorial">
-  <h2>Bienvenue dans <span style="color:#00aaff;">Make a Event</span> 🎉</h2>
-  <p>Crée ton premier événement pour gagner de l'argent 💵.<br>
-  Puis achète des événements spéciaux dans la boutique à droite.</p>
-  <button onclick="startGame()">Commencer</button>
-</div>
+      <div class="preview mini">
+        <div class="logo" id="previewLogo"><span style="opacity:0.35">Logo</span></div>
+        <div class="stats">
+          <div class="stat"><strong id="previewName">Nom de l'événement</strong></div>
+          <div class="stat" id="previewType">Type — Commun</div>
+          <div class="stat" id="previewProfit">Profit estimé: 0 €</div>
+        </div>
+      </div>
 
-<div id="summary">
-  <h2>Résultats 🎪</h2>
-  <p><b id="sumName"></b></p>
-  <p>👥 Participants : <b id="sumPart">0</b></p>
-  <p>💰 Profit : <b id="sumProfit">0 €</b></p>
-  <button onclick="newEvent()">Créer un nouvel événement</button>
-</div>
+      <label>Nom</label>
+      <input id="inputName" type="text" placeholder="Ex : Summer Fest">
 
-<div class="left">
-  <h2 id="eventName">Nom de l'événement</h2>
-  <img id="eventLogo" src="" alt="Logo">
-  <p id="eventDescription">Description de ton événement</p>
-  <div class="result">
-    <p>👥 Participants estimés : <b id="participants">0</b></p>
-    <p>💰 Profit estimé : <b id="profit">0 €</b></p>
+      <label>Logo (image)</label>
+      <input id="inputLogo" type="file" accept="image/*">
+
+      <label>Description</label>
+      <textarea id="inputDesc" placeholder="Texte qui attire (max 200 signes)"></textarea>
+
+      <div class="row">
+        <div class="col">
+          <label>Type d'événement</label>
+          <select id="inputType">
+            <option value="concert">Concert</option>
+            <option value="conference">Conférence</option>
+            <option value="exposition">Exposition</option>
+            <option value="fete">Fête</option>
+            <option value="atelier">Atelier</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Prix du ticket (€)</label>
+          <input id="inputPrice" type="number" min="1" value="15">
+        </div>
+      </div>
+
+      <label>Budget marketing (€)</label>
+      <input id="inputMarketing" type="number" min="0" value="50">
+
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button id="btnAdd" class="btn">Créer & Ajouter au stock</button>
+        <button id="btnPreview" class="btn ghost">Mettre à jour aperçu</button>
+      </div>
+
+      <div class="controls" style="margin-top:12px;">
+        <div class="muted">Cartes sauvegardées : <span id="count">0</span></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: inventory -->
+    <section>
+      <div class="panel">
+        <div class="inventory-header">
+          <div>
+            <div class="title">Inventaire — Mes événements</div>
+            <div class="sub">Collection visuelle (stockée localement)</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input id="search" class="search" placeholder="Rechercher nom ou type">
+            <button id="clearAll" class="btn ghost">Supprimer tout</button>
+          </div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+
+        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+          <div class="muted">Données stockées localement • auto-sauvegarde</div>
+        </div>
+      </div>
+    </section>
   </div>
-  <button id="launchBtn" onclick="launchEvent()">Lancer l'événement 🚀</button>
-</div>
 
-<div class="right">
-  <div class="money">💵 Argent : <span id="money">100</span> €</div>
+  <!-- Modal details -->
+  <div class="modal-back" id="modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-weight:700" id="modalTitle">Détails événement</div>
+        <div><button id="modalClose" class="btn ghost">Fermer</button></div>
+      </div>
 
-  <label>Nom : <input type="text" id="nameInput" placeholder="Ex : Summer Fest"></label>
-  <label>Logo : <input type="file" id="logoInput" accept="image/*"></label>
-  <label>Description : <textarea id="descInput" rows="3" placeholder="Décris ton événement"></textarea></label>
-  <label>Type :
-    <select id="typeSelect"></select>
-  </label>
-  <label>Prix du ticket (€) : <input type="number" id="priceInput" value="10" min="1"></label>
-  <label>Budget marketing (€) : <input type="number" id="marketingInput" value="50" min="0"></label>
+      <div class="row" style="margin-top:12px;">
+        <div class="logo" id="modalLogo"></div>
+        <div class="details">
+          <div style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
+            <div>
+              <div class="name" id="modalName"></div>
+              <div class="small muted" id="modalType"></div>
+            </div>
+            <div>
+              <div id="modalBadge" class="badge"></div>
+            </div>
+          </div>
 
-  <div class="shop">
-    <h3>🛒 Boutique</h3>
-    <div id="shopList"></div>
+          <p style="margin-top:10px; color:var(--muted)" id="modalDesc"></p>
+
+          <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+            <div><strong>Profit estimé:</strong> <span id="modalProfit"></span></div>
+            <div><strong>Prix ticket:</strong> <span id="modalPrice"></span> €</div>
+            <div><strong>Marketing:</strong> <span id="modalMarketing"></span> €</div>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:14px;">
+            <button id="btnDelete" class="btn ghost">Supprimer</button>
+            <button id="btnClose" class="btn">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
 <script>
-const typeSelect = document.getElementById('typeSelect');
-const shopList = document.getElementById('shopList');
-const moneyEl = document.getElementById('money');
-const summary = document.getElementById('summary');
-const tutorial = document.getElementById('tutorial');
+/* ========= Logic & stockage ========= */
+const LS_KEY = 'makeaevent_collection_v2';
+let collection = []; // tableau d'objets {id,name,logo,desc,type,price,marketing,profit,rarity,created}
 
-let money = 100;
-let launched = false;
-let ownedEvents = ['concert']; // de base
-const allEvents = [
-  { id: 'concert', name: 'Concert', rarity: 'common', price: 0 },
-  { id: 'conference', name: 'Conférence', rarity: 'rare', price: 100 },
-  { id: 'exposition', name: 'Exposition', rarity: 'epic', price: 250 },
-  { id: 'festival', name: 'Festival', rarity: 'leg', price: 500 },
-  { id: 'gala', name: 'Gala Mythique', rarity: 'myth', price: 1000 },
-  { id: 'soirée', name: 'Soirée Riche', rarity: 'rich', price: 2500 },
-  { id: 'summit', name: 'Sommet Pro', rarity: 'pro', price: 5000 },
-];
+const el = {
+  inputName: document.getElementById('inputName'),
+  inputLogo: document.getElementById('inputLogo'),
+  inputDesc: document.getElementById('inputDesc'),
+  inputType: document.getElementById('inputType'),
+  inputPrice: document.getElementById('inputPrice'),
+  inputMarketing: document.getElementById('inputMarketing'),
+  previewLogo: document.getElementById('previewLogo'),
+  previewName: document.getElementById('previewName'),
+  previewType: document.getElementById('previewType'),
+  previewProfit: document.getElementById('previewProfit'),
+  btnAdd: document.getElementById('btnAdd'),
+  btnPreview: document.getElementById('btnPreview'),
+  grid: document.getElementById('grid'),
+  count: document.getElementById('count'),
+  modal: document.getElementById('modal'),
+  modalClose: document.getElementById('modalClose'),
+  modalTitle: document.getElementById('modalTitle'),
+  modalLogo: document.getElementById('modalLogo'),
+  modalName: document.getElementById('modalName'),
+  modalType: document.getElementById('modalType'),
+  modalDesc: document.getElementById('modalDesc'),
+  modalProfit: document.getElementById('modalProfit'),
+  modalPrice: document.getElementById('modalPrice'),
+  modalMarketing: document.getElementById('modalMarketing'),
+  modalBadge: document.getElementById('modalBadge'),
+  btnDelete: document.getElementById('btnDelete'),
+  btnClose: document.getElementById('btnClose'),
+  search: document.getElementById('search'),
+  clearAll: document.getElementById('clearAll'),
+  themeToggle: document.getElementById('themeToggle'),
+};
 
-const baseParticipants = { concert: 200, conference: 120, exposition: 150, festival: 300, gala: 400, soirée: 500, summit: 600 };
+function uid(){ return 'ev_'+Math.random().toString(36).slice(2,9) }
 
-function startGame() {
-  tutorial.style.display = "none";
-  refreshShop();
-  refreshTypes();
-  updatePreview();
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(collection));
+  render();
 }
 
-function refreshTypes() {
-  typeSelect.innerHTML = '';
-  ownedEvents.forEach(id => {
-    const ev = allEvents.find(e => e.id === id);
-    const opt = document.createElement('option');
-    opt.value = id;
-    opt.textContent = ev.name;
-    typeSelect.appendChild(opt);
-  });
+function load(){
+  const raw = localStorage.getItem(LS_KEY);
+  if(raw) try{ collection = JSON.parse(raw) }catch(e){ collection = [] }
+  render();
 }
 
-function refreshShop() {
-  shopList.innerHTML = '';
-  allEvents.forEach(ev => {
-    if (ownedEvents.includes(ev.id)) return;
-    const div = document.createElement('div');
-    div.className = 'shop-item';
-    div.innerHTML = `<span class="rarity r-${ev.rarity}">${ev.name}</span><button onclick="buyEvent('${ev.id}')">${ev.price} €</button>`;
-    shopList.appendChild(div);
-  });
+/* ---------- Calculs ---------- */
+const baseByType = { concert:200, conference:120, exposition:150, fete:180, atelier:90 };
+
+function computeParticipants(type, desc, marketing, price){
+  const base = baseByType[type] || 100;
+  const attractivity = 1 + Math.min((desc||'').length / 100, 0.5) + Math.min(marketing / 500, 0.5);
+  const priceEffect = Math.max(0.05, 1.6 - price / 25); // plus réaliste, non-linéaire
+  return Math.floor(base * attractivity * priceEffect);
 }
 
-function buyEvent(id) {
-  const ev = allEvents.find(e => e.id === id);
-  if (money >= ev.price) {
-    money -= ev.price;
-    ownedEvents.push(ev.id);
-    refreshShop();
-    refreshTypes();
-    updateMoney();
-  } else alert("Pas assez d'argent !");
+function computeProfit(type, desc, marketing, price){
+  const participants = computeParticipants(type, desc, marketing, price);
+  const base = baseByType[type] || 100;
+  const costFixed = base * 2; // coût fixe lié au type (salle, staff...)
+  const profit = Math.max(0, Math.floor((participants * price) - marketing - costFixed));
+  return { participants, profit };
 }
 
-function updateMoney() { moneyEl.textContent = money; }
-
-const eventName = document.getElementById('eventName');
-const eventLogo = document.getElementById('eventLogo');
-const eventDescription = document.getElementById('eventDescription');
-const participantsDisplay = document.getElementById('participants');
-const profitDisplay = document.getElementById('profit');
-const nameInput = document.getElementById('nameInput');
-const logoInput = document.getElementById('logoInput');
-const descInput = document.getElementById('descInput');
-const priceInput = document.getElementById('priceInput');
-const marketingInput = document.getElementById('marketingInput');
-const launchBtn = document.getElementById('launchBtn');
-const sumName = document.getElementById('sumName');
-const sumPart = document.getElementById('sumPart');
-const sumProfit = document.getElementById('sumProfit');
-
-let eventData = {};
-
-function updatePreview() {
-  if (launched) return;
-  const name = nameInput.value.trim() || "Nom de l'événement";
-  const desc = descInput.value.trim() || "Description de ton événement";
-  const type = typeSelect.value;
-  const price = Math.max(1, parseFloat(priceInput.value) || 1);
-  const marketing = Math.max(0, parseFloat(marketingInput.value) || 0);
-
-  eventName.textContent = name;
-  eventDescription.textContent = desc;
-
-  const base = baseParticipants[type] || 100;
-  const attractivity = 1 + Math.min(desc.length / 100, 0.5) + Math.min(marketing / 500, 0.5);
-  const priceEffect = Math.max(0.1, 1.5 - price / 25);
-  const participants = Math.floor(base * attractivity * priceEffect);
-  const profit = Math.floor((participants * price) - (marketing + base * 2));
-
-  participantsDisplay.textContent = participants.toLocaleString();
-  profitDisplay.textContent = profit.toLocaleString() + " €";
-
-  eventData = { name, participants, profit };
+/* Rareté selon profit (seuils demandés) */
+function rarityFromProfit(p){
+  if(p > 8000) return 'pro';
+  if(p > 4000) return 'rich';
+  if(p > 2000) return 'myth';
+  if(p > 1000) return 'leg';
+  if(p > 500) return 'epic';
+  if(p >= 200) return 'rare';
+  return 'common';
 }
 
-function launchEvent() {
-  if (launched) return;
-  launched = true;
-  launchBtn.disabled = true;
-  launchBtn.textContent = "Événement en cours...";
-  setTimeout(() => {
-    summary.style.display = "flex";
-    sumName.textContent = "🎤 " + eventData.name;
-    sumPart.textContent = eventData.participants.toLocaleString();
-    sumProfit.textContent = eventData.profit.toLocaleString() + " €";
-    money += Math.max(0, eventData.profit);
-    updateMoney();
-  }, 1500);
+/* style label lisible */
+function rarityLabel(r){
+  const map = { common:'Commun', rare:'Rare', epic:'Épique', leg:'Légendaire', myth:'Mythique', rich:'Riche', pro:'Pro' };
+  return map[r]||r;
 }
 
-function newEvent() {
-  launched = false;
-  summary.style.display = "none";
-  launchBtn.disabled = false;
-  launchBtn.textContent = "Lancer l'événement 🚀";
-  updatePreview();
-}
+/* ========= UI actions ========= */
+let currentFileDataUrl = null;
 
-logoInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
+el.inputLogo.addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f){ currentFileDataUrl = null; el.previewLogo.innerHTML = '<span style="opacity:.35">Logo</span>'; return; }
   const reader = new FileReader();
-  reader.onload = evt => eventLogo.src = evt.target.result;
-  reader.readAsDataURL(file);
+  reader.onload = ev => {
+    currentFileDataUrl = ev.target.result;
+    el.previewLogo.innerHTML = '<img src="'+currentFileDataUrl+'" alt="">';
+  }
+  reader.readAsDataURL(f);
 });
 
-[nameInput, descInput, typeSelect, priceInput, marketingInput].forEach(el =>
-  el.addEventListener('input', updatePreview)
-);
-</script>
+function updatePreview(){
+  const name = el.inputName.value.trim() || 'Nom de l\'événement';
+  const desc = el.inputDesc.value.trim() || '';
+  const type = el.inputType.value;
+  const price = Math.max(1, Number(el.inputPrice.value)||1);
+  const marketing = Math.max(0, Number(el.inputMarketing.value)||0);
+  const { participants, profit } = computeProfit(type, desc, marketing, price);
 
+  el.previewName.textContent = name;
+  el.previewType.textContent = `${type.charAt(0).toUpperCase()+type.slice(1)} — ${rarityLabel(rarityFromProfit(profit))}`;
+  el.previewProfit.textContent = `Profit estimé: ${profit.toLocaleString()} €`;
+  if(!currentFileDataUrl){ el.previewLogo.innerHTML = '<span style="opacity:.35">Logo</span>' }
+}
+
+el.btnPreview.addEventListener('click', updatePreview);
+
+el.btnAdd.addEventListener('click', ()=>{
+  const name = el.inputName.value.trim();
+  if(!name) return alert('Donne un nom à ton événement.');
+  const desc = el.inputDesc.value.trim();
+  const type = el.inputType.value;
+  const price = Math.max(1, Number(el.inputPrice.value)||1);
+  const marketing = Math.max(0, Number(el.inputMarketing.value)||0);
+  const { participants, profit } = computeProfit(type, desc, marketing, price);
+  const rarity = rarityFromProfit(profit);
+
+  const item = {
+    id: uid(),
+    name, desc, type, price, marketing,
+    participants, profit, rarity,
+    logo: currentFileDataUrl || null,
+    created: Date.now()
+  };
+  collection.unshift(item); // newest first
+  save();
+  // reset inputs lightly
+  el.inputName.value = '';
+  el.inputDesc.value = '';
+  el.inputPrice.value = 15;
+  el.inputMarketing.value = 50;
+  el.inputLogo.value = '';
+  currentFileDataUrl = null;
+  el.previewLogo.innerHTML = '<span style="opacity:.35">Logo</span>';
+  updatePreview();
+});
+
+/* Render collection */
+function makeBadgeHtml(r){ 
+  if(r === 'rich') return `<span class="r-rich">Riche</span>`;
+  if(r === 'pro') return `<span class="r-pro">Pro</span>`;
+  const cls = { common:'r-common', rare:'r-rare', epic:'r-epic', leg:'r-leg', myth:'r-myth' }[r]||'r-common';
+  return `<span class="${cls}">${rarityLabel(r)}</span>`;
+}
+
+function render(filter=''){
+  el.grid.innerHTML = '';
+  const q = filter.trim().toLowerCase();
+  const list = collection.filter(it => {
+    if(!q) return true;
+    return it.name.toLowerCase().includes(q) || it.type.toLowerCase().includes(q) || it.rarity.toLowerCase().includes(q);
+  });
+
+  list.forEach(it=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const logoHtml = it.logo ? `<div class="logo"><img src="${it.logo}" alt=""></div>` : `<div class="logo"><span style="opacity:.35">Logo</span></div>`;
+    const badge = (() => {
+      if(it.rarity === 'rich') return `<div class="badge r-rich">Riche</div>`;
+      if(it.rarity === 'pro') return `<div class="badge r-pro">Pro</div>`;
+      const cls = { common:'r-common', rare:'r-rare', epic:'r-epic', leg:'r-leg', myth:'r-myth' }[it.rarity]||'r-common';
+      return `<div class="badge ${cls}">${rarityLabel(it.rarity)}</div>`;
+    })();
+
+    card.innerHTML = `
+      <div class="top">
+        ${logoHtml}
+        <div class="meta">
+          <div class="name">${escapeHTML(it.name)}</div>
+          <div class="desc">${escapeHTML(it.desc || ('Type: '+it.type))}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div>
+          <div class="small">Profit: <strong>${it.profit.toLocaleString()} €</strong></div>
+          <div class="small">Participants: ${it.participants}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          ${badge}
+          <div style="display:flex; gap:6px;">
+            <button class="btn ghost" onclick="viewItem('${it.id}')">Voir</button>
+            <button class="btn" onclick="duplicateItem('${it.id}')">Dupliquer</button>
+          </div>
+        </div>
+      </div>
+    `;
+    el.grid.appendChild(card);
+  });
+
+  el.count.textContent = collection.length;
+}
+
+/* Escape simple HTML */
+function escapeHTML(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]) }
+
+/* View details */
+let currentViewId = null;
+function viewItem(id){
+  const it = collection.find(x=>x.id===id);
+  if(!it) return;
+  currentViewId = id;
+  el.modal.style.display = 'flex';
+  el.modalLogo.innerHTML = it.logo ? `<img src="${it.logo}" alt="" style="width:100%;height:100%;object-fit:cover">` : '<span style="opacity:.35">Logo</span>';
+  el.modalName.textContent = it.name;
+  el.modalType.textContent = it.type.charAt(0).toUpperCase()+it.type.slice(1);
+  el.modalDesc.textContent = it.desc || '(pas de description)';
+  el.modalProfit.textContent = it.profit.toLocaleString() + ' €';
+  el.modalPrice.textContent = it.price.toLocaleString();
+  el.modalMarketing.textContent = it.marketing.toLocaleString();
+  el.modalBadge.innerHTML = makeBadgeHtml(it.rarity);
+}
+
+/* delete */
+el.btnDelete.addEventListener('click', ()=>{
+  if(!currentViewId) return;
+  if(!confirm('Supprimer définitivement cette carte ?')) return;
+  collection = collection.filter(x=>x.id!==currentViewId);
+  save();
+  closeModal();
+});
+function duplicateItem(id){
+  const it = collection.find(x=>x.id===id);
+  if(!it) return;
+  const copy = Object.assign({}, it, { id: uid(), created: Date.now(), name: it.name + ' (copie)' });
+  collection.unshift(copy);
+  save();
+}
+
+/* modal close */
+function closeModal(){ el.modal.style.display = 'none'; currentViewId = null; }
+el.modalClose.addEventListener('click', closeModal);
+el.btnClose.addEventListener('click', closeModal);
+el.modal.addEventListener('click', (e)=>{ if(e.target === el.modal) closeModal(); });
+
+/* search & clear */
+el.search.addEventListener('input', (e)=> render(e.target.value) );
+el.clearAll.addEventListener('click', ()=>{
+  if(!confirm('Vider complètement l\'inventaire (suppression locale) ?')) return;
+  collection = []; save();
+});
+
+/* theme toggle */
+const body = document.body;
+const themeBtn = el.themeToggle;
+function setTheme(t){
+  body.setAttribute('data-theme', t);
+  themeBtn.textContent = (t==='dark') ? 'Mode Clair' : 'Mode Sombre';
+}
+themeBtn.addEventListener('click', ()=>{
+  const next = (body.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
+  setTheme(next);
+  localStorage.setItem('makeaevent_theme_v2', next);
+});
+
+/* init */
+function init(){
+  const storedTheme = localStorage.getItem('makeaevent_theme_v2') || 'light';
+  setTheme(storedTheme);
+  load();
+  updatePreview();
+}
+init();
+
+/* helpers for save/render calls */
+function updatePreview(){ // call here to make the button consistent
+  const name = el.inputName.value.trim() || 'Nom de l\'événement';
+  const desc = el.inputDesc.value.trim() || '';
+  const type = el.inputType.value;
+  const price = Math.max(1, Number(el.inputPrice.value)||1);
+  const marketing = Math.max(0, Number(el.inputMarketing.value)||0);
+  const { participants, profit } = computeProfit(type, desc, marketing, price);
+  el.previewName.textContent = name;
+  el.previewType.textContent = type.charAt(0).toUpperCase()+type.slice(1) + ' — ' + rarityLabel(rarityFromProfit(profit));
+  el.previewProfit.textContent = `Profit estimé: ${profit.toLocaleString()} €`;
+}
+
+/* load/save wrapper to render after save */
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(collection));
+  render(el.search.value||'');
+}
+
+/* load called earlier */
+/* expose some functions to global so buttons in string HTML can call them */
+window.viewItem = viewItem;
+window.duplicateItem = duplicateItem;
+window.save = save;
+window.load = load;
+</script>
 </body>
 </html>
