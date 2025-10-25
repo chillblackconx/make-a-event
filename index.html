@@ -11,56 +11,76 @@
     background: radial-gradient(circle at top, #1a1a1a, #0d0d0d);
     color: #f0f0f0; font-family: 'Poppins', sans-serif;
   }
-  .left {
-    flex: 2; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 20px; text-align: center;
-  }
+  .left { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   .right {
     flex: 1; background: rgba(40,40,40,0.9);
-    padding: 15px; display: flex; flex-direction: column;
-    gap: 10px; border-left: 1px solid #333;
+    padding: 15px; display: flex; flex-direction: column; gap: 10px; border-left: 1px solid #333; overflow-y: auto;
   }
   input, select, textarea {
     width: 100%; background: #222; color: #fff;
     border: 1px solid #555; border-radius: 6px;
     padding: 6px; font-size: 14px;
   }
-  input[type="file"] { padding: 3px; }
-  img {
-    width: 180px; height: 180px; object-fit: cover;
-    border-radius: 10px; border: 2px solid #444;
-  }
-  .result {
-    background: #222; padding: 10px 15px;
-    border-radius: 10px; margin-top: 10px;
-  }
+  img { width: 160px; height: 160px; object-fit: cover; border-radius: 10px; border: 2px solid #444; }
+  .result { background: #222; padding: 10px 15px; border-radius: 10px; margin-top: 10px; }
   button {
-    background: #0077ff; border: none; border-radius: 6px;
-    color: white; font-weight: 600; padding: 8px;
-    cursor: pointer; transition: 0.2s;
+    background: #0077ff; border: none; border-radius: 6px; color: white;
+    font-weight: 600; padding: 8px; cursor: pointer; transition: 0.2s;
   }
   button:hover { background: #005fe0; }
-  /* Tutoriel */
-  #tutorial {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.85); display: flex;
-    align-items: center; justify-content: center;
-    text-align: center; flex-direction: column;
+  #summary, #tutorial {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
     z-index: 10; padding: 20px;
   }
-  #tutorial button { margin-top: 20px; }
+  #summary { display: none; }
+  #summary h2 { color: #00aaff; }
+
+  .money {
+    background: #111; padding: 8px 12px; border-radius: 8px;
+    text-align: center; margin-bottom: 10px; font-weight: bold;
+  }
+  .shop {
+    margin-top: 20px; border-top: 1px solid #333; padding-top: 10px;
+  }
+  .shop-item {
+    background: #222; border-radius: 8px; padding: 8px;
+    margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .rarity {
+    font-weight: bold;
+    text-shadow: 0 0 5px currentColor;
+  }
+  .r-common { color: #00ff6a; }
+  .r-rare { color: #00aaff; }
+  .r-epic { color: #b700ff; }
+  .r-leg { color: #ffea00; }
+  .r-myth { color: #ff3b3b; }
+  .r-rich {
+    background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+    -webkit-background-clip: text; color: transparent; font-weight: bold;
+  }
+  .r-pro {
+    background: linear-gradient(90deg, #aaa, #111);
+    -webkit-background-clip: text; color: transparent;
+  }
 </style>
 </head>
 <body>
 
 <div id="tutorial">
   <h2>Bienvenue dans <span style="color:#00aaff;">Make a Event</span> 🎉</h2>
-  <p>Crée ton événement, choisis le prix du ticket et ton budget marketing,<br>
-  puis vois combien de personnes viennent et combien tu gagnes !</p>
-  <p>💡 Plus le ticket est cher → moins de monde.  
-     Plus tu fais de marketing → plus tu attires de monde.</p>
+  <p>Crée ton premier événement pour gagner de l'argent 💵.<br>
+  Puis achète des événements spéciaux dans la boutique à droite.</p>
   <button onclick="startGame()">Commencer</button>
+</div>
+
+<div id="summary">
+  <h2>Résultats 🎪</h2>
+  <p><b id="sumName"></b></p>
+  <p>👥 Participants : <b id="sumPart">0</b></p>
+  <p>💰 Profit : <b id="sumProfit">0 €</b></p>
+  <button onclick="newEvent()">Créer un nouvel événement</button>
 </div>
 
 <div class="left">
@@ -71,63 +91,110 @@
     <p>👥 Participants estimés : <b id="participants">0</b></p>
     <p>💰 Profit estimé : <b id="profit">0 €</b></p>
   </div>
+  <button id="launchBtn" onclick="launchEvent()">Lancer l'événement 🚀</button>
 </div>
 
 <div class="right">
-  <label>Nom :
-    <input type="text" id="nameInput" placeholder="Ex : Summer Fest">
-  </label>
-  <label>Logo :
-    <input type="file" id="logoInput" accept="image/*">
-  </label>
-  <label>Description :
-    <textarea id="descInput" rows="3" placeholder="Décris ton événement"></textarea>
-  </label>
+  <div class="money">💵 Argent : <span id="money">100</span> €</div>
+
+  <label>Nom : <input type="text" id="nameInput" placeholder="Ex : Summer Fest"></label>
+  <label>Logo : <input type="file" id="logoInput" accept="image/*"></label>
+  <label>Description : <textarea id="descInput" rows="3" placeholder="Décris ton événement"></textarea></label>
   <label>Type :
-    <select id="typeSelect">
-      <option value="concert">Concert</option>
-      <option value="conference">Conférence</option>
-      <option value="exposition">Exposition</option>
-      <option value="fete">Fête</option>
-    </select>
+    <select id="typeSelect"></select>
   </label>
-  <label>Prix du ticket (€) :
-    <input type="number" id="priceInput" value="10" min="1">
-  </label>
-  <label>Budget marketing (€) :
-    <input type="number" id="marketingInput" value="50" min="0">
-  </label>
+  <label>Prix du ticket (€) : <input type="number" id="priceInput" value="10" min="1"></label>
+  <label>Budget marketing (€) : <input type="number" id="marketingInput" value="50" min="0"></label>
+
+  <div class="shop">
+    <h3>🛒 Boutique</h3>
+    <div id="shopList"></div>
+  </div>
 </div>
 
 <script>
+const typeSelect = document.getElementById('typeSelect');
+const shopList = document.getElementById('shopList');
+const moneyEl = document.getElementById('money');
+const summary = document.getElementById('summary');
+const tutorial = document.getElementById('tutorial');
+
+let money = 100;
+let launched = false;
+let ownedEvents = ['concert']; // de base
+const allEvents = [
+  { id: 'concert', name: 'Concert', rarity: 'common', price: 0 },
+  { id: 'conference', name: 'Conférence', rarity: 'rare', price: 100 },
+  { id: 'exposition', name: 'Exposition', rarity: 'epic', price: 250 },
+  { id: 'festival', name: 'Festival', rarity: 'leg', price: 500 },
+  { id: 'gala', name: 'Gala Mythique', rarity: 'myth', price: 1000 },
+  { id: 'soirée', name: 'Soirée Riche', rarity: 'rich', price: 2500 },
+  { id: 'summit', name: 'Sommet Pro', rarity: 'pro', price: 5000 },
+];
+
+const baseParticipants = { concert: 200, conference: 120, exposition: 150, festival: 300, gala: 400, soirée: 500, summit: 600 };
+
+function startGame() {
+  tutorial.style.display = "none";
+  refreshShop();
+  refreshTypes();
+  updatePreview();
+}
+
+function refreshTypes() {
+  typeSelect.innerHTML = '';
+  ownedEvents.forEach(id => {
+    const ev = allEvents.find(e => e.id === id);
+    const opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = ev.name;
+    typeSelect.appendChild(opt);
+  });
+}
+
+function refreshShop() {
+  shopList.innerHTML = '';
+  allEvents.forEach(ev => {
+    if (ownedEvents.includes(ev.id)) return;
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    div.innerHTML = `<span class="rarity r-${ev.rarity}">${ev.name}</span><button onclick="buyEvent('${ev.id}')">${ev.price} €</button>`;
+    shopList.appendChild(div);
+  });
+}
+
+function buyEvent(id) {
+  const ev = allEvents.find(e => e.id === id);
+  if (money >= ev.price) {
+    money -= ev.price;
+    ownedEvents.push(ev.id);
+    refreshShop();
+    refreshTypes();
+    updateMoney();
+  } else alert("Pas assez d'argent !");
+}
+
+function updateMoney() { moneyEl.textContent = money; }
+
 const eventName = document.getElementById('eventName');
 const eventLogo = document.getElementById('eventLogo');
 const eventDescription = document.getElementById('eventDescription');
 const participantsDisplay = document.getElementById('participants');
 const profitDisplay = document.getElementById('profit');
-
 const nameInput = document.getElementById('nameInput');
 const logoInput = document.getElementById('logoInput');
 const descInput = document.getElementById('descInput');
-const typeSelect = document.getElementById('typeSelect');
 const priceInput = document.getElementById('priceInput');
 const marketingInput = document.getElementById('marketingInput');
-const tutorial = document.getElementById('tutorial');
+const launchBtn = document.getElementById('launchBtn');
+const sumName = document.getElementById('sumName');
+const sumPart = document.getElementById('sumPart');
+const sumProfit = document.getElementById('sumProfit');
 
-// Base participants selon le type
-const baseParticipants = {
-  concert: 200,
-  conference: 120,
-  exposition: 150,
-  fete: 180
-};
-
-function startGame() {
-  tutorial.style.display = "none";
-  updatePreview();
-}
+let eventData = {};
 
 function updatePreview() {
+  if (launched) return;
   const name = nameInput.value.trim() || "Nom de l'événement";
   const desc = descInput.value.trim() || "Description de ton événement";
   const type = typeSelect.value;
@@ -137,21 +204,41 @@ function updatePreview() {
   eventName.textContent = name;
   eventDescription.textContent = desc;
 
-  // ---- CALCUL ----
-  const base = baseParticipants[type];
+  const base = baseParticipants[type] || 100;
   const attractivity = 1 + Math.min(desc.length / 100, 0.5) + Math.min(marketing / 500, 0.5);
-  
-  // Impact du prix : cher = moins de monde (non-linéaire)
   const priceEffect = Math.max(0.1, 1.5 - price / 25);
-
   const participants = Math.floor(base * attractivity * priceEffect);
   const profit = Math.floor((participants * price) - (marketing + base * 2));
 
   participantsDisplay.textContent = participants.toLocaleString();
   profitDisplay.textContent = profit.toLocaleString() + " €";
+
+  eventData = { name, participants, profit };
 }
 
-// Logo upload
+function launchEvent() {
+  if (launched) return;
+  launched = true;
+  launchBtn.disabled = true;
+  launchBtn.textContent = "Événement en cours...";
+  setTimeout(() => {
+    summary.style.display = "flex";
+    sumName.textContent = "🎤 " + eventData.name;
+    sumPart.textContent = eventData.participants.toLocaleString();
+    sumProfit.textContent = eventData.profit.toLocaleString() + " €";
+    money += Math.max(0, eventData.profit);
+    updateMoney();
+  }, 1500);
+}
+
+function newEvent() {
+  launched = false;
+  summary.style.display = "none";
+  launchBtn.disabled = false;
+  launchBtn.textContent = "Lancer l'événement 🚀";
+  updatePreview();
+}
+
 logoInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
@@ -160,7 +247,6 @@ logoInput.addEventListener('change', e => {
   reader.readAsDataURL(file);
 });
 
-// Update dynamique
 [nameInput, descInput, typeSelect, priceInput, marketingInput].forEach(el =>
   el.addEventListener('input', updatePreview)
 );
