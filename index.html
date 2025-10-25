@@ -5,35 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Make a Event 4.0</title>
 <style>
-  body{margin:0;font-family:Arial,sans-serif;background:#05060a;color:#fff;}
-  [data-theme="dark"]{background:#05060a;color:#fff;}
-  [data-theme="light"]{background:#f0f0f0;color:#111;}
-  .container{max-width:960px;margin:auto;padding:20px;}
-  .btn{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;margin:2px;background:#00aaff;color:#042033;font-weight:700;}
-  .btn-small{padding:4px 8px;font-size:13px;}
-  .card{background:#111;padding:10px;margin:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
-  .card-footer{display:flex;gap:10px;align-items:center;}
-  .badge{padding:2px 6px;border-radius:6px;font-weight:700;font-size:12px;}
-  .r-common{background:#555;color:#fff;}
-  .r-rare{background:#0f0;color:#000;}
-  .r-epic{background:#00f;color:#fff;}
-  .r-leg{background:#9400d3;color:#fff;}
-  .r-myth{background:#ff00ff;color:#fff;}
-  .r-rich{background:#ffa500;color:#000;}
-  .r-pro{background:#888;color:#fff;}
-  .r-dev-special{background:linear-gradient(90deg,#ff0000,#ffff00);-webkit-background-clip:text;color:transparent;font-weight:700;}
-  #tutorial{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:50;flex-direction:column;color:white;padding:20px;text-align:center;}
-  #tutorial button{margin-top:10px;}
+body{margin:0;font-family:Arial,sans-serif;background:#05060a;color:#fff;}
+.container{max-width:960px;margin:auto;padding:20px;}
+input,select{padding:6px 8px;margin:4px;display:block;width:100%;box-sizing:border-box;}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;margin:2px;background:#00aaff;color:#042033;font-weight:700;}
+.card{background:#111;padding:10px;margin:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
+.card-footer{display:flex;gap:10px;align-items:center;}
+.badge{padding:2px 6px;border-radius:6px;font-weight:700;font-size:12px;}
+.r-common{background:#555;color:#fff;}
+.r-rare{background:#0f0;color:#000;}
+.r-epic{background:#00f;color:#fff;}
+.r-leg{background:#9400d3;color:#fff;}
+.r-myth{background:#ff00ff;color:#fff;}
+.r-rich{background:#ffa500;color:#000;}
+.r-pro{background:#888;color:#fff;}
+.r-dev-special{background:linear-gradient(90deg,#ff0000,#ffff00);-webkit-background-clip:text;color:transparent;font-weight:700;}
+#tutorial{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:50;flex-direction:column;color:white;padding:20px;text-align:center;}
+#tutorial button{margin-top:10px;}
+img{max-width:100px;display:block;margin:5px 0;}
 </style>
 </head>
-<body data-theme="dark">
+<body>
 
 <script>
-  // --- LOGIQUE DEV FLAG TOUT EN HAUT ---
+  // --- DEV FLAG TOUT EN HAUT ---
   (function(){
-    const devFlag = localStorage.getItem('makeaevent_dev') || 'on'; // par défaut ON
+    const devFlag = localStorage.getItem('makeaevent_dev') || 'on';
     if(devFlag === 'off'){
-      // Redirige le joueur vers dev.html
       window.location.href = 'dev.html';
     }
   })();
@@ -41,18 +39,25 @@
 
 <div class="container">
   <h1>Make a Event 4.0</h1>
+
+  <!-- CREATION COMPAGNIE -->
   <div id="companySection">
     <h2>Créer votre compagnie</h2>
     <input id="companyName" placeholder="Nom de la compagnie">
-    <input id="companyLogo" placeholder="URL du logo">
+    <input type="hidden" id="companyLogo">
+    <input type="file" id="companyLogoUpload" accept="image/*">
+    <img id="companyLogoPreview">
     <input id="companyDesc" placeholder="Description">
-    <button id="btnCreateCompany" class="btn">Créer la compagnie</button>
+    <button id="btnCreateCompany">Créer la compagnie</button>
   </div>
 
+  <!-- CREATION EVENEMENT -->
   <div id="eventSection" style="display:none;">
     <h2>Créer un événement</h2>
     <input id="eventName" placeholder="Nom de l'événement">
-    <input id="eventLogo" placeholder="URL du logo">
+    <input type="hidden" id="eventLogo">
+    <input type="file" id="eventLogoUpload" accept="image/*">
+    <img id="eventLogoPreview">
     <input id="eventDesc" placeholder="Description">
     <input id="eventPrice" type="number" placeholder="Prix (€)">
     <input id="eventMarketing" type="number" placeholder="Marketing (€)">
@@ -65,135 +70,146 @@
       <option value="rich">Riche</option>
       <option value="pro">Pro</option>
     </select>
-    <button id="btnAddEvent" class="btn">Créer & Ajouter</button>
+    <button id="btnAddEvent">Créer & Ajouter</button>
   </div>
 
+  <!-- INVENTAIRE -->
   <h2>Inventaire d'événements</h2>
   <div id="grid"></div>
 </div>
 
-<!-- Tutoriel interactif -->
+<!-- Tutoriel simplifié -->
 <div id="tutorial">
-  <div id="tutorialText"></div>
-  <button id="tutorialNext" class="btn">Suivant</button>
+  <div id="tutorialText">Bienvenue dans Make a Event 4.0 ! Perfect !</div>
+  <button id="tutorialNext">Suivant</button>
 </div>
 
 <script>
-  // --- VARIABLES DE BASE ---
-  let collection = [];
-  let money = 0;
-  let currentModalId = null;
-
-  const el = {
-    grid: document.getElementById('grid'),
-    tutorial: document.getElementById('tutorial'),
-    tutorialText: document.getElementById('tutorialText'),
-    tutorialNext: document.getElementById('tutorialNext'),
-    companySection: document.getElementById('companySection'),
-    eventSection: document.getElementById('eventSection'),
-    companyName: document.getElementById('companyName'),
-    companyLogo: document.getElementById('companyLogo'),
-    companyDesc: document.getElementById('companyDesc'),
-    btnCreateCompany: document.getElementById('btnCreateCompany'),
-    eventName: document.getElementById('eventName'),
-    eventLogo: document.getElementById('eventLogo'),
-    eventDesc: document.getElementById('eventDesc'),
-    eventPrice: document.getElementById('eventPrice'),
-    eventMarketing: document.getElementById('eventMarketing'),
-    eventRarity: document.getElementById('eventRarity'),
-    btnAddEvent: document.getElementById('btnAddEvent')
-  };
-
-  // --- TUTORIEL ---
-  const steps = [
-    "Bienvenue dans Make a Event 4.0 ! Commençons par créer votre compagnie.",
-    "Entrez le nom, logo et description de votre compagnie, puis cliquez sur 'Créer la compagnie'.",
-    "Parfait ! Maintenant, créons votre premier événement.",
-    "Remplissez le nom, logo, description, type, prix et budget marketing, puis cliquez sur 'Créer & Ajouter'.",
-    "Super ! Cliquez sur un événement pour lancer/arrêter et commencer à gagner de l'argent.",
-    "Félicitations ! Vous avez lancé votre premier événement. Vous pouvez en créer d'autres ou arrêter celui-ci à tout moment.",
-    "Tutoriel terminé ! Amusez-vous bien !"
-  ];
-  let stepIndex = 0;
-  function showStep(){el.tutorialText.textContent=steps[stepIndex]; el.tutorialNext.textContent=(stepIndex===steps.length-1)?"Terminer":"Suivant";}
-  el.tutorialNext.addEventListener('click',()=>{
-    stepIndex++;
-    if(stepIndex>=steps.length){el.tutorial.style.display='none'; return;}
-    showStep();
-  });
-  showStep();
-
-  // --- CREATION COMPAGNIE ---
-  el.btnCreateCompany.addEventListener('click', ()=>{
-    if(!el.companyName.value){alert('Nom requis'); return;}
-    el.companySection.style.display='none';
-    el.eventSection.style.display='block';
-    money = 5000; // argent initial
-  });
-
-  // --- CREATION EVENEMENT ---
-  el.btnAddEvent.addEventListener('click', ()=>{
-    const e={
-      id:Date.now().toString(),
-      name:el.eventName.value,
-      logo:el.eventLogo.value,
-      desc:el.eventDesc.value,
-      price:Number(el.eventPrice.value)||0,
-      marketing:Number(el.eventMarketing.value)||0,
-      rarity:el.eventRarity.value,
-      participants:0,
-      status:'stopped',
-      profit:0
-    };
-    collection.push(e);
-    render();
-  });
-
-  function makeBadgeHtml(r){
-    if(r.toLowerCase().includes('dev')) return `<span class="r-dev-special">DEV</span>`;
-    const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth',rich:'r-rich',pro:'r-pro'}[r]||'r-common';
-    return `<span class="badge ${cls}">${r.toUpperCase()}</span>`;
+const tutorialText = document.getElementById('tutorialText');
+const tutorialNext = document.getElementById('tutorialNext');
+const steps = [
+  "Bienvenue dans Make a Event 4.0 ! Perfect !",
+  "Créez votre compagnie. Perfect !",
+  "Créez votre premier événement. Perfect !",
+  "Lancez votre premier événement. Perfect !",
+  "Félicitations ! Vous êtes prêt à jouer. Perfect !"
+];
+let stepIndex=0;
+tutorialNext.addEventListener('click', ()=>{
+  stepIndex++;
+  if(stepIndex>=steps.length){
+    document.getElementById('tutorial').style.display='none';
+    return;
   }
+  tutorialText.textContent=steps[stepIndex];
+});
 
-  function render(){
-    el.grid.innerHTML='';
-    collection.forEach(i=>{
-      const div=document.createElement('div'); div.className='card';
-      div.innerHTML=`<div>
-        <strong>${i.name}</strong><br>${i.desc}<br>Participants: ${i.participants}
-      </div>
-      <div class="card-footer">
-        ${makeBadgeHtml(i.rarity)}
-        <button class="btn btn-small" onclick="toggleEvent('${i.id}')">Lancer/Stop</button>
-      </div>`;
-      el.grid.appendChild(div);
-    });
-  }
+const el={
+  grid: document.getElementById('grid'),
+  companySection: document.getElementById('companySection'),
+  eventSection: document.getElementById('eventSection'),
+  companyName: document.getElementById('companyName'),
+  companyLogo: document.getElementById('companyLogo'),
+  companyLogoUpload: document.getElementById('companyLogoUpload'),
+  companyLogoPreview: document.getElementById('companyLogoPreview'),
+  companyDesc: document.getElementById('companyDesc'),
+  btnCreateCompany: document.getElementById('btnCreateCompany'),
+  eventName: document.getElementById('eventName'),
+  eventLogo: document.getElementById('eventLogo'),
+  eventLogoUpload: document.getElementById('eventLogoUpload'),
+  eventLogoPreview: document.getElementById('eventLogoPreview'),
+  eventDesc: document.getElementById('eventDesc'),
+  eventPrice: document.getElementById('eventPrice'),
+  eventMarketing: document.getElementById('eventMarketing'),
+  eventRarity: document.getElementById('eventRarity'),
+  btnAddEvent: document.getElementById('btnAddEvent')
+};
 
-  window.toggleEvent=function(id){
-    const i=collection.find(x=>x.id===id); if(!i)return;
-    if(i.status==='stopped'){
-      const cost=i.price+i.marketing;
-      if(cost>money){alert('Pas assez d’argent'); return;}
-      money-=cost; i.status='running'; alert('Événement lancé !');
-    }else{i.status='stopped'; alert('Événement arrêté');}
-    render();
+let collection=[], money=5000;
+
+// --- Upload images ---
+el.companyLogoUpload.addEventListener('change', e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    el.companyLogoPreview.src=ev.target.result;
+    el.companyLogo.value=ev.target.result;
   };
+  reader.readAsDataURL(file);
+});
+el.eventLogoUpload.addEventListener('change', e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    el.eventLogoPreview.src=ev.target.result;
+    el.eventLogo.value=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
 
-  // --- FLAGS DEV DE dev.html ---
-  (function applyDevFlags(){
-    try{
-      const dev = localStorage.getItem('makeaevent_dev');
-      if(dev==='on'){
-        const cheatMoney = Number(localStorage.getItem('makeaevent_cheats_money')||0);
-        if(cheatMoney>0) money=Math.max(money,cheatMoney);
-        const unlockedAll = localStorage.getItem('makeaevent_unlocked_all')==='true';
-        if(unlockedAll) window.__makeaevent_unlocked_all=true;
-        const instant = localStorage.getItem('makeaevent_instant_launch')==='true';
-        if(instant) window.__makeaevent_instant_launch=true;
-      }
-    }catch(e){console.error('Dev flags error', e);}
-  })();
+// --- Création compagnie ---
+el.btnCreateCompany.addEventListener('click', ()=>{
+  if(!el.companyName.value){alert('Nom requis'); return;}
+  el.companySection.style.display='none';
+  el.eventSection.style.display='block';
+});
+
+// --- Création événement ---
+el.btnAddEvent.addEventListener('click', ()=>{
+  const e={
+    id:Date.now().toString(),
+    name:el.eventName.value,
+    logo:el.eventLogo.value,
+    desc:el.eventDesc.value,
+    price:Number(el.eventPrice.value)||0,
+    marketing:Number(el.eventMarketing.value)||0,
+    rarity:el.eventRarity.value,
+    participants:0,
+    status:'stopped',
+    profit:0
+  };
+  collection.push(e);
+  // --- Stock pour event.html ---
+  let stock=JSON.parse(localStorage.getItem('makeaevent_stock')||'[]');
+  stock.push(e);
+  localStorage.setItem('makeaevent_stock', JSON.stringify(stock));
+  render();
+});
+
+// --- Badges ---
+function makeBadgeHtml(r){
+  if(r.toLowerCase().includes('dev')) return `<span class="r-dev-special">DEV</span>`;
+  const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth',rich:'r-rich',pro:'r-pro'}[r]||'r-common';
+  return `<span class="badge ${cls}">${r.toUpperCase()}</span>`;
+}
+
+// --- Affichage ---
+function render(){
+  el.grid.innerHTML='';
+  collection.forEach(i=>{
+    const div=document.createElement('div'); div.className='card';
+    div.innerHTML=`<div>
+      <img src="${i.logo}"><br>
+      <strong>${i.name}</strong><br>${i.desc}<br>Participants: ${i.participants}
+    </div>
+    <div class="card-footer">
+      ${makeBadgeHtml(i.rarity)}
+      <button onclick="toggleEvent('${i.id}')">Lancer/Stop</button>
+    </div>`;
+    el.grid.appendChild(div);
+  });
+}
+
+// --- Lancer / Stop événement ---
+window.toggleEvent=function(id){
+  const i=collection.find(x=>x.id===id); if(!i) return;
+  if(i.status==='stopped'){
+    const cost=i.price+i.marketing;
+    if(cost>money){alert('Pas assez d’argent'); return;}
+    money-=cost; i.status='running'; alert('Événement lancé !');
+  }else{i.status='stopped'; alert('Événement arrêté');}
+  render();
+};
 </script>
 </body>
 </html>
