@@ -60,33 +60,13 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
 </style>
 </head>
 <body data-theme="light">
-
-<!-- ================== DEV ON/OFF ================== -->
-<script>
-  // Si OFF, redirige vers dev.html
-  const DEV_STATUS = "ON"; // <-- Mettre OFF pour fermer le site
-  if(DEV_STATUS === "OFF"){
-    window.location.href = "dev.html";
-  }
-</script>
-<!-- ================== FIN DEV ON/OFF ================== -->
-
 <div class="app">
   <!-- LEFT: create -->
   <section class="panel">
     <div class="header">
-      <div>
-        <div class="title">Créer un événement</div>
-        <div class="sub">Capital: <span id="money">5000</span> €</div>
-      </div>
+      <div><div class="title">Créer un événement</div><div class="sub">Capital: <span id="money">5000</span> €</div></div>
       <div><button id="themeToggle" class="btn btn-small">Mode Sombre</button></div>
     </div>
-    
-    <!-- Tutoriel Perfect ! -->
-    <div style="padding:8px;background:var(--card);border-radius:8px;margin-bottom:12px;color:var(--accent);font-weight:600;">
-      Perfect ! Suivez les étapes pour créer votre événement.
-    </div>
-
     <div class="preview mini">
       <div class="logo" id="previewLogo"><span style="opacity:0.35">Logo</span></div>
       <div class="stats">
@@ -95,57 +75,30 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
         <div class="stat" id="previewProfit">Profit estimé: 0 €</div>
       </div>
     </div>
-
     <label>Nom</label><input id="inputName" type="text" placeholder="Ex : Summer Fest">
     <label>Logo (image)</label><input id="inputLogo" type="file" accept="image/*">
     <label>Description</label><textarea id="inputDesc" placeholder="Texte qui attire (max 200 signes)"></textarea>
-
     <div class="row">
-      <div class="col">
-        <label>Type d'événement</label>
-        <select id="inputType">
-          <option value="concert">Concert</option>
-          <option value="conference">Conférence</option>
-          <option value="exposition">Exposition</option>
-          <option value="fete">Fête</option>
-          <option value="atelier">Atelier</option>
-        </select>
-      </div>
-      <div class="col">
-        <label>Prix du ticket (€)</label>
-        <input id="inputPrice" type="number" min="1" value="15">
-      </div>
+      <div class="col"><label>Type d'événement</label><select id="inputType"><option value="concert">Concert</option><option value="conference">Conférence</option><option value="exposition">Exposition</option><option value="fete">Fête</option><option value="atelier">Atelier</option></select></div>
+      <div class="col"><label>Prix du ticket (€)</label><input id="inputPrice" type="number" min="1" value="15"></div>
     </div>
-
     <label>Budget marketing (€)</label><input id="inputMarketing" type="number" min="0" value="50">
-
     <div style="display:flex;gap:8px;margin-top:8px;">
       <button id="btnAdd" class="btn">Créer & Ajouter</button>
       <button id="btnPreview" class="btn ghost">Mettre à jour aperçu</button>
     </div>
-
-    <div class="controls" style="margin-top:12px;">
-      <div class="muted">Cartes sauvegardées : <span id="count">0</span></div>
-    </div>
+    <div class="controls" style="margin-top:12px;"><div class="muted">Cartes sauvegardées : <span id="count">0</span></div></div>
   </section>
 
   <!-- RIGHT: inventory -->
   <section>
     <div class="panel">
       <div class="inventory-header">
-        <div>
-          <div class="title">Inventaire</div>
-          <div class="sub">Mes événements</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input id="search" class="search" placeholder="Rechercher nom ou type">
-          <button id="clearAll" class="btn ghost">Supprimer tout</button>
-        </div>
+        <div><div class="title">Inventaire</div><div class="sub">Mes événements</div></div>
+        <div style="display:flex;gap:8px;align-items:center;"><input id="search" class="search" placeholder="Rechercher nom ou type"><button id="clearAll" class="btn ghost">Supprimer tout</button></div>
       </div>
       <div class="grid" id="grid"></div>
-      <div style="margin-top:12px;display:flex;justify-content:flex-end;">
-        <div class="muted">Données stockées localement</div>
-      </div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;"><div class="muted">Données stockées localement</div></div>
     </div>
   </section>
 </div>
@@ -161,10 +114,7 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
       <div class="logo" id="modalLogo"></div>
       <div class="details">
         <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;">
-          <div>
-            <div class="name" id="modalName"></div>
-            <div class="small muted" id="modalType"></div>
-          </div>
+          <div><div class="name" id="modalName"></div><div class="small muted" id="modalType"></div></div>
           <div><div id="modalBadge" class="badge"></div></div>
         </div>
         <p style="margin-top:10px;color:var(--muted)" id="modalDesc"></p>
@@ -176,7 +126,7 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
         <div style="display:flex;gap:8px;margin-top:14px;">
           <button id="btnDelete" class="btn ghost">Supprimer</button>
           <button id="btnLaunch" class="btn">Lancer / Acheter</button>
-          <button id="btnClose" class="btn">Fermer</button>
+          <button id="btnStop" class="btn">Arrêter l’événement</button>
         </div>
       </div>
     </div>
@@ -205,12 +155,6 @@ document.body.addEventListener('keydown', e=>{
     alert("Mode DEV: " + DEV_STATUS);
   }
 });
-
-// Redirection si DEV OFF sur dev.html
-if(location.pathname.endsWith("dev.html") && DEV_STATUS==="OFF"){
-  document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Le site est fermé, il sera bientôt ouvert</h1>";
-  throw new Error("Site fermé"); 
-}
 
 // ====== Logo preview ======
 let currentFileDataUrl = null;
@@ -340,7 +284,6 @@ window.showDetails=function(id){
   el.modal.style.display='flex';
 }
 el.modalClose.onclick=()=>el.modal.style.display='none';
-el.btnClose.onclick=()=>el.modal.style.display='none';
 
 // ====== Delete / Launch / Stop ======
 el.btnDelete.onclick=()=>{ if(!currentModalId) return; collection=collection.filter(x=>x.id!==currentModalId); save(); el.modal.style.display='none'; }
