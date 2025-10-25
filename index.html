@@ -1,215 +1,250 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Make a Event 4.0</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Make a Event 3.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#05060a;color:#fff;}
-.container{max-width:960px;margin:auto;padding:20px;}
-input,select{padding:6px 8px;margin:4px;display:block;width:100%;box-sizing:border-box;}
-button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;margin:2px;background:#00aaff;color:#042033;font-weight:700;}
-.card{background:#111;padding:10px;margin:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
-.card-footer{display:flex;gap:10px;align-items:center;}
-.badge{padding:2px 6px;border-radius:6px;font-weight:700;font-size:12px;}
-.r-common{background:#555;color:#fff;}
-.r-rare{background:#0f0;color:#000;}
-.r-epic{background:#00f;color:#fff;}
-.r-leg{background:#9400d3;color:#fff;}
-.r-myth{background:#ff00ff;color:#fff;}
-.r-rich{background:#ffa500;color:#000;}
-.r-pro{background:#888;color:#fff;}
-.r-dev-special{background:linear-gradient(90deg,#ff0000,#ffff00);-webkit-background-clip:text;color:transparent;font-weight:700;}
-#tutorial{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:50;flex-direction:column;color:white;padding:20px;text-align:center;}
-#tutorial button{margin-top:10px;}
-img{max-width:100px;display:block;margin:5px 0;}
+:root{
+  --bg:#ffffff; --panel:#f6f7fb; --text:#0b1220; --muted:#5b6b78; --accent:#0066ff; --card:#ffffff; --glass: rgba(10,10,10,0.04);
+}
+[data-theme="dark"]{
+  --bg:#0b0f14; --panel:#0e1317; --text:#e8eef6; --muted:#9fb0c3; --accent:#00aaff; --card:#0b1115; --glass: rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);min-height:100vh;display:flex;gap:18px;padding:18px;}
+.app{width:100%;display:grid;grid-template-columns:380px 1fr;gap:18px;margin:auto;max-width:1200px;}
+.panel{background:var(--panel);border-radius:12px;padding:16px;box-shadow:0 6px 20px var(--glass);display:flex;flex-direction:column;gap:12px;}
+.header{display:flex;align-items:center;justify-content:space-between;}
+.title{font-weight:700;font-size:18px;}
+.sub{font-size:13px;color:var(--muted);}
+label{display:block;font-size:13px;margin-top:6px;color:var(--muted);}
+input[type="text"],input[type="number"],textarea,select{width:100%;padding:10px 12px;margin-top:6px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:var(--card);color:var(--text);outline:none;font-size:14px;}
+textarea{resize:vertical;min-height:78px;max-height:180px;}
+.row{display:flex;gap:8px;}
+.row .col{flex:1;}
+.mini{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:var(--card);}
+.btn{background:var(--accent);color:white;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600;}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(0,0,0,0.06);}
+.logo{width:96px;height:96px;border-radius:10px;background:linear-gradient(180deg,#111,#222);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid rgba(0,0,0,0.06);}
+.logo img{width:100%;height:100%;object-fit:cover;}
+.stats{display:flex;gap:4px;flex-direction:column;}
+.stat{font-size:13px;color:var(--muted);}
+.inventory-header{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.search{padding:8px 10px;border-radius:10px;width:220px;border:1px solid rgba(0,0,0,0.06);background:var(--card);color:var(--text);}
+.grid{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.card{border-radius:10px;padding:12px;background:linear-gradient(180deg,var(--card), rgba(0,0,0,0.02));box-shadow:0 6px 18px var(--glass);display:flex;gap:10px;flex-direction:column;}
+.card .top{display:flex;gap:10px;align-items:center;}
+.card .meta{display:flex;flex-direction:column;gap:4px;flex:1;}
+.name{font-weight:600;font-size:15px;}
+.desc{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;max-height:36px;}
+.badge{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px;display:inline-block;}
+.r-common{color:#0f9d58;border:1px solid rgba(15,157,88,0.12);}
+.r-rare{color:#1e88e5;border:1px solid rgba(30,136,229,0.12);}
+.r-epic{color:#8e24aa;border:1px solid rgba(142,36,170,0.12);}
+.r-leg{color:#fbc02d;border:1px solid rgba(251,192,45,0.12);}
+.r-myth{color:#e53935;border:1px solid rgba(229,57,53,0.12);}
+.r-rich{background:linear-gradient(90deg,#ff3b3b,#ff8a00,#ffd600,#00c853,#00b0ff,#651fff);-webkit-background-clip:text;color:transparent;font-weight:800;}
+.r-pro{background:linear-gradient(90deg,#bbbbbb,#111111);-webkit-background-clip:text;color:transparent;font-weight:800;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;}
+.small{font-size:13px;color:var(--muted);}
+.controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:6px;}
+.muted{color:var(--muted);font-size:13px;}
+.modal-back{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);z-index:30;padding:20px;}
+.modal{width:100%;max-width:720px;background:var(--panel);border-radius:12px;padding:18px;box-shadow:0 18px 40px rgba(0,0,0,0.6);color:var(--text);}
+.modal .row{align-items:flex-start;}
+.modal .logo{width:160px;height:160px;}
+.modal .details{flex:1;}
+@media(max-width:980px){.app{grid-template-columns:1fr;padding-bottom:40px}.panel{order:2}}
 </style>
 </head>
-<body>
+<body data-theme="light">
 
+<!-- ================== DEV ON/OFF ================== -->
 <script>
-  // --- DEV FLAG TOUT EN HAUT ---
-  (function(){
-    const devFlag = localStorage.getItem('makeaevent_dev') || 'on';
-    if(devFlag === 'off'){
-      window.location.href = 'dev.html';
-    }
-  })();
-</script>
-
-<div class="container">
-  <h1>Make a Event 4.0</h1>
-
-  <!-- CREATION COMPAGNIE -->
-  <div id="companySection">
-    <h2>Créer votre compagnie</h2>
-    <input id="companyName" placeholder="Nom de la compagnie">
-    <input type="hidden" id="companyLogo">
-    <input type="file" id="companyLogoUpload" accept="image/*">
-    <img id="companyLogoPreview">
-    <input id="companyDesc" placeholder="Description">
-    <button id="btnCreateCompany">Créer la compagnie</button>
-  </div>
-
-  <!-- CREATION EVENEMENT -->
-  <div id="eventSection" style="display:none;">
-    <h2>Créer un événement</h2>
-    <input id="eventName" placeholder="Nom de l'événement">
-    <input type="hidden" id="eventLogo">
-    <input type="file" id="eventLogoUpload" accept="image/*">
-    <img id="eventLogoPreview">
-    <input id="eventDesc" placeholder="Description">
-    <input id="eventPrice" type="number" placeholder="Prix (€)">
-    <input id="eventMarketing" type="number" placeholder="Marketing (€)">
-    <select id="eventRarity">
-      <option value="common">Commun</option>
-      <option value="rare">Rare</option>
-      <option value="epic">Épic</option>
-      <option value="leg">Légendaire</option>
-      <option value="myth">Mythique</option>
-      <option value="rich">Riche</option>
-      <option value="pro">Pro</option>
-    </select>
-    <button id="btnAddEvent">Créer & Ajouter</button>
-  </div>
-
-  <!-- INVENTAIRE -->
-  <h2>Inventaire d'événements</h2>
-  <div id="grid"></div>
-</div>
-
-<!-- Tutoriel simplifié -->
-<div id="tutorial">
-  <div id="tutorialText">Bienvenue dans Make a Event 4.0 ! Perfect !</div>
-  <button id="tutorialNext">Suivant</button>
-</div>
-
-<script>
-const tutorialText = document.getElementById('tutorialText');
-const tutorialNext = document.getElementById('tutorialNext');
-const steps = [
-  "Bienvenue dans Make a Event 4.0 ! Perfect !",
-  "Créez votre compagnie. Perfect !",
-  "Créez votre premier événement. Perfect !",
-  "Lancez votre premier événement. Perfect !",
-  "Félicitations ! Vous êtes prêt à jouer. Perfect !"
-];
-let stepIndex=0;
-tutorialNext.addEventListener('click', ()=>{
-  stepIndex++;
-  if(stepIndex>=steps.length){
-    document.getElementById('tutorial').style.display='none';
-    return;
+  // Si OFF, redirige vers dev.html
+  const DEV_STATUS = "ON"; // <-- Mettre OFF pour fermer le site
+  if(DEV_STATUS === "OFF"){
+    window.location.href = "dev.html";
   }
-  tutorialText.textContent=steps[stepIndex];
-});
+</script>
+<!-- ================== FIN DEV ON/OFF ================== -->
 
-const el={
-  grid: document.getElementById('grid'),
-  companySection: document.getElementById('companySection'),
-  eventSection: document.getElementById('eventSection'),
-  companyName: document.getElementById('companyName'),
-  companyLogo: document.getElementById('companyLogo'),
-  companyLogoUpload: document.getElementById('companyLogoUpload'),
-  companyLogoPreview: document.getElementById('companyLogoPreview'),
-  companyDesc: document.getElementById('companyDesc'),
-  btnCreateCompany: document.getElementById('btnCreateCompany'),
-  eventName: document.getElementById('eventName'),
-  eventLogo: document.getElementById('eventLogo'),
-  eventLogoUpload: document.getElementById('eventLogoUpload'),
-  eventLogoPreview: document.getElementById('eventLogoPreview'),
-  eventDesc: document.getElementById('eventDesc'),
-  eventPrice: document.getElementById('eventPrice'),
-  eventMarketing: document.getElementById('eventMarketing'),
-  eventRarity: document.getElementById('eventRarity'),
-  btnAddEvent: document.getElementById('btnAddEvent')
-};
-
-let collection=[], money=5000;
-
-// --- Upload images ---
-el.companyLogoUpload.addEventListener('change', e=>{
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    el.companyLogoPreview.src=ev.target.result;
-    el.companyLogo.value=ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-el.eventLogoUpload.addEventListener('change', e=>{
-  const file=e.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    el.eventLogoPreview.src=ev.target.result;
-    el.eventLogo.value=ev.target.result;
-  };
-  reader.readAsDataURL(file);
-});
-
-// --- Création compagnie ---
-el.btnCreateCompany.addEventListener('click', ()=>{
-  if(!el.companyName.value){alert('Nom requis'); return;}
-  el.companySection.style.display='none';
-  el.eventSection.style.display='block';
-});
-
-// --- Création événement ---
-el.btnAddEvent.addEventListener('click', ()=>{
-  const e={
-    id:Date.now().toString(),
-    name:el.eventName.value,
-    logo:el.eventLogo.value,
-    desc:el.eventDesc.value,
-    price:Number(el.eventPrice.value)||0,
-    marketing:Number(el.eventMarketing.value)||0,
-    rarity:el.eventRarity.value,
-    participants:0,
-    status:'stopped',
-    profit:0
-  };
-  collection.push(e);
-  // --- Stock pour event.html ---
-  let stock=JSON.parse(localStorage.getItem('makeaevent_stock')||'[]');
-  stock.push(e);
-  localStorage.setItem('makeaevent_stock', JSON.stringify(stock));
-  render();
-});
-
-// --- Badges ---
-function makeBadgeHtml(r){
-  if(r.toLowerCase().includes('dev')) return `<span class="r-dev-special">DEV</span>`;
-  const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth',rich:'r-rich',pro:'r-pro'}[r]||'r-common';
-  return `<span class="badge ${cls}">${r.toUpperCase()}</span>`;
-}
-
-// --- Affichage ---
-function render(){
-  el.grid.innerHTML='';
-  collection.forEach(i=>{
-    const div=document.createElement('div'); div.className='card';
-    div.innerHTML=`<div>
-      <img src="${i.logo}"><br>
-      <strong>${i.name}</strong><br>${i.desc}<br>Participants: ${i.participants}
+<div class="app">
+  <!-- LEFT: create -->
+  <section class="panel">
+    <div class="header">
+      <div>
+        <div class="title">Créer un événement</div>
+        <div class="sub">Capital: <span id="money">5000</span> €</div>
+      </div>
+      <div><button id="themeToggle" class="btn btn-small">Mode Sombre</button></div>
     </div>
-    <div class="card-footer">
-      ${makeBadgeHtml(i.rarity)}
-      <button onclick="toggleEvent('${i.id}')">Lancer/Stop</button>
-    </div>`;
-    el.grid.appendChild(div);
-  });
-}
+    
+    <!-- Tutoriel Perfect ! -->
+    <div style="padding:8px;background:var(--card);border-radius:8px;margin-bottom:12px;color:var(--accent);font-weight:600;">
+      Perfect ! Suivez les étapes pour créer votre événement.
+    </div>
 
-// --- Lancer / Stop événement ---
-window.toggleEvent=function(id){
-  const i=collection.find(x=>x.id===id); if(!i) return;
-  if(i.status==='stopped'){
-    const cost=i.price+i.marketing;
-    if(cost>money){alert('Pas assez d’argent'); return;}
-    money-=cost; i.status='running'; alert('Événement lancé !');
-  }else{i.status='stopped'; alert('Événement arrêté');}
-  render();
-};
+    <div class="preview mini">
+      <div class="logo" id="previewLogo"><span style="opacity:0.35">Logo</span></div>
+      <div class="stats">
+        <div class="stat"><strong id="previewName">Nom de l'événement</strong></div>
+        <div class="stat" id="previewType">Type — Commun</div>
+        <div class="stat" id="previewProfit">Profit estimé: 0 €</div>
+      </div>
+    </div>
+
+    <label>Nom</label><input id="inputName" type="text" placeholder="Ex : Summer Fest">
+    <label>Logo (image)</label><input id="inputLogo" type="file" accept="image/*">
+    <label>Description</label><textarea id="inputDesc" placeholder="Texte qui attire (max 200 signes)"></textarea>
+
+    <div class="row">
+      <div class="col">
+        <label>Type d'événement</label>
+        <select id="inputType">
+          <option value="concert">Concert</option>
+          <option value="conference">Conférence</option>
+          <option value="exposition">Exposition</option>
+          <option value="fete">Fête</option>
+          <option value="atelier">Atelier</option>
+        </select>
+      </div>
+      <div class="col">
+        <label>Prix du ticket (€)</label>
+        <input id="inputPrice" type="number" min="1" value="15">
+      </div>
+    </div>
+
+    <label>Budget marketing (€)</label><input id="inputMarketing" type="number" min="0" value="50">
+
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button id="btnAdd" class="btn">Créer & Ajouter</button>
+      <button id="btnPreview" class="btn ghost">Mettre à jour aperçu</button>
+    </div>
+
+    <div class="controls" style="margin-top:12px;">
+      <div class="muted">Cartes sauvegardées : <span id="count">0</span></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: inventory -->
+  <section>
+    <div class="panel">
+      <div class="inventory-header">
+        <div>
+          <div class="title">Inventaire</div>
+          <div class="sub">Mes événements</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="search" class="search" placeholder="Rechercher nom ou type">
+          <button id="clearAll" class="btn ghost">Supprimer tout</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+        <div class="muted">Données stockées localement</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Modal details -->
+<div class="modal-back" id="modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-weight:700" id="modalTitle">Détails événement</div>
+      <div><button id="modalClose" class="btn ghost">Fermer</button></div>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <div class="logo" id="modalLogo"></div>
+      <div class="details">
+        <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;">
+          <div>
+            <div class="name" id="modalName"></div>
+            <div class="small muted" id="modalType"></div>
+          </div>
+          <div><div id="modalBadge" class="badge"></div></div>
+        </div>
+        <p style="margin-top:10px;color:var(--muted)" id="modalDesc"></p>
+        <div style="display:flex;gap:12px;margin-top:12px;align-items:center;">
+          <div><strong>Profit estimé:</strong> <span id="modalProfit"></span></div>
+          <div><strong>Prix ticket:</strong> <span id="modalPrice"></span> €</div>
+          <div><strong>Marketing:</strong> <span id="modalMarketing"></span> €</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button id="btnDelete" class="btn ghost">Supprimer</button>
+          <button id="btnLaunch" class="btn">Lancer / Acheter</button>
+          <button id="btnClose" class="btn">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== Logic ======
+const LS_KEY = 'makeaevent3';
+let collection = [], money = 5000;
+const el={};
+['inputName','inputLogo','inputDesc','inputType','inputPrice','inputMarketing','previewLogo','previewName','previewType','previewProfit','btnAdd','btnPreview','grid','count','modal','modalClose','modalTitle','modalLogo','modalName','modalType','modalDesc','modalProfit','modalPrice','modalMarketing','modalBadge','btnDelete','btnClose','btnLaunch','search','clearAll','themeToggle','money'].forEach(id=>el[id]=document.getElementById(id));
+let currentFileDataUrl = null;
+el.inputLogo.addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f){ currentFileDataUrl=null; el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; return; }
+  const reader = new FileReader();
+  reader.onload=ev=>{currentFileDataUrl=ev.target.result; el.previewLogo.innerHTML='<img src="'+currentFileDataUrl+'">';}
+  reader.readAsDataURL(f);
+});
+function uid(){ return 'ev_'+Math.random().toString(36).slice(2,9); }
+const baseByType={concert:200,conference:120,exposition:150,fete:180,atelier:90};
+function computeParticipants(type,desc,marketing,price){ const base=baseByType[type]||100; const attractivity=1+Math.min((desc||'').length/100,0.5)+Math.min(marketing/500,0.5); const priceEffect=Math.max(0.05,1.6-price/25); return Math.floor(base*attractivity*priceEffect);}
+function computeProfit(type,desc,marketing,price){ const participants=computeParticipants(type,desc,marketing,price); const base=baseByType[type]||100; const costFixed=base*2; const profit=Math.max(0,Math.floor((participants*price)-marketing-costFixed)); return {participants,profit};}
+function rarityFromProfit(p){if(p>8000)return'pro';if(p>4000)return'rich';if(p>2000)return'myth';if(p>1000)return'leg';if(p>500)return'epic';if(p>=200)return'rare';return'common';}
+function rarityLabel(r){const map={common:'Commun',rare:'Rare',epic:'Épique',leg:'Légendaire',myth:'Mythique',rich:'Riche',pro:'Pro'};return map[r]||r;}
+function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
+function updatePreview(){const name=el.inputName.value.trim()||'Nom de l\'événement'; const desc=el.inputDesc.value.trim()||''; const type=el.inputType.value; const price=Math.max(1,Number(el.inputPrice.value)||1); const marketing=Math.max(0,Number(el.inputMarketing.value)||0); const {participants,profit}=computeProfit(type,desc,marketing,price); el.previewName.textContent=name; el.previewType.textContent=type.charAt(0).toUpperCase()+type.slice(1)+' — '+rarityLabel(rarityFromProfit(profit)); el.previewProfit.textContent=`Profit estimé: ${profit.toLocaleString()} €`; if(!currentFileDataUrl) el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>';}
+el.btnPreview.addEventListener('click',updatePreview);
+
+function save(){localStorage.setItem(LS_KEY,JSON.stringify({collection,money})); render(); updateMoney();}
+function load(){const raw=localStorage.getItem(LS_KEY); if(raw)try{const d=JSON.parse(raw); collection=d.collection||[]; money=d.money||5000;}catch(e){collection=[];money=5000;} render(); updateMoney();}
+
+el.btnAdd.addEventListener('click',()=>{
+  const name=el.inputName.value.trim(); if(!name)return alert('Donne un nom');
+  const desc=el.inputDesc.value.trim();
+  const type=el.inputType.value;
+  const price=Math.max(1,Number(el.inputPrice.value)||1);
+  const marketing=Math.max(0,Number(el.inputMarketing.value)||0);
+  const {participants,profit}=computeProfit(type,desc,marketing,price);
+  const rarity=rarityFromProfit(profit);
+  const item={id:uid(),name,desc,type,price,marketing,participants,profit,rarity,logo:currentFileDataUrl||null,created:Date.now()};
+  collection.unshift(item);
+  save();
+  el.inputName.value=''; el.inputDesc.value=''; el.inputPrice.value=15; el.inputMarketing.value=50; el.inputLogo.value=''; currentFileDataUrl=null; el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; updatePreview();
+});
+
+/* Render */
+function makeBadgeHtml(r){if(r==='rich')return'<span class="r-rich">Riche</span>'; if(r==='pro')return'<span class="r-pro">Pro</span>'; const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth'}[r]||'r-common'; return `<span class="badge ${cls}">${rarityLabel(r)}</span>`;}
+function render(){el.grid.innerHTML=''; collection.forEach(i=>{ const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div class="top"><div class="logo">${i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'}</div><div class="meta"><div class="name">${escapeHTML(i.name)}</div><div class="desc">${escapeHTML(i.desc)}</div><div class="small">Participants: ${i.participants}</div></div></div><div class="card-footer">${makeBadgeHtml(i.rarity)} <button class="btn btn-small" onclick="showDetails('${i.id}')">Détails</button></div>`; el.grid.appendChild(div); }); el.count.textContent=collection.length;}
+function updateMoney(){el.money.textContent=money.toLocaleString();}
+
+/* Modal logic */
+let currentModalId=null;
+window.showDetails=function(id){currentModalId=id; const i=collection.find(x=>x.id===id); if(!i)return; el.modalTitle.textContent=i.name; el.modalName.textContent=i.name; el.modalType.textContent=i.type+' — '+rarityLabel(i.rarity); el.modalDesc.textContent=i.desc; el.modalProfit.textContent=i.profit.toLocaleString()+' €'; el.modalPrice.textContent=i.price; el.modalMarketing.textContent=i.marketing; el.modalBadge.innerHTML=makeBadgeHtml(i.rarity); el.modalLogo.innerHTML=i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'; el.modal.style.display='flex';}
+el.modalClose.onclick=()=>el.modal.style.display='none';
+el.btnClose.onclick=()=>el.modal.style.display='none';
+el.btnDelete.onclick=()=>{ if(!currentModalId)return; collection=collection.filter(x=>x.id!==currentModalId); save(); el.modal.style.display='none'; }
+el.btnLaunch.onclick=()=>{ if(!currentModalId)return; const i=collection.find(x=>x.id===currentModalId); if(!i)return; const cost=i.price+i.marketing; if(cost>money){alert('Pas assez d’argent pour lancer cet événement'); return;} money-=cost; money+=i.profit; save(); alert(`Événement lancé ! Gagné ${i.profit.toLocaleString()} €`); el.modal.style.display='none'; }
+
+/* Search & clear */
+el.search.addEventListener('input',()=>{const val=el.search.value.toLowerCase(); Array.from(el.grid.children).forEach((card,i)=>{card.style.display=(collection[i].name.toLowerCase().includes(val)||collection[i].type.toLowerCase().includes(val))?'flex':'none';})});
+el.clearAll.addEventListener('click',()=>{if(confirm('Supprimer tout?')){collection=[];save();}});
+
+/* Theme toggle */
+el.themeToggle.addEventListener('click',()=>{ const t=document.body.getAttribute('data-theme')==='light'?'dark':'light'; document.body.setAttribute('data-theme',t); el.themeToggle.textContent=t==='dark'?'Mode Clair':'Mode Sombre'; });
+
+load(); updatePreview();
 </script>
 </body>
 </html>
