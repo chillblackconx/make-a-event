@@ -3,143 +3,46 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>DEV MODE — Make a Event</title>
+<title>Site fermé — Make a Event</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#0b1220;color:#e6eef8}
-  .card{width:920px;max-width:95%;background:linear-gradient(180deg,#08121a,#0e1822);padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.6)}
-  h1{margin:0 0 8px;font-size:20px;color:#fff}
-  p{margin:6px 0;color:#a9bdcf}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  button{background:#00aaff;border:none;padding:10px 12px;border-radius:8px;color:#042033;cursor:pointer;font-weight:700}
-  button.danger{background:#ff6b6b;color:#fff}
-  .muted{color:#7e93a9;font-size:13px}
-  input[type="password"]{padding:8px;border-radius:8px;border:1px solid #244; background:#041017;color:#dfe9f3}
-  .big{font-size:16px;padding:14px 18px}
-  .status{display:inline-block;padding:6px 10px;border-radius:999px;background:#062f1d;color:#bff3d0;font-weight:700}
-  .closed{background:#442222;color:#ffd6d6}
-  .controls{margin-top:14px}
-  .note{margin-top:10px;color:#9fb0c3;font-size:13px}
+  body{margin:0;font-family:Arial,sans-serif;background:#0b1220;color:#e6eef8;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;}
+  .container{max-width:600px;padding:20px;}
+  h1{font-size:28px;color:#ffd6d6;margin-bottom:10px;}
+  p{font-size:18px;color:#a9bdcf;}
+  .btn{margin:8px;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:700;color:#042033;background:#00aaff;}
+  .btn-danger{background:#ff6b6b;color:#fff;}
+  #adminPanel{position:absolute;top:10px;right:10px;}
 </style>
 </head>
 <body>
-  <div class="card" id="card">
-    <h1>DEV CONTROL CENTER</h1>
-    <p class="muted">Ici tu peux activer/désactiver le mode dev, donner de l'argent, débloquer tout, activer le lancement instantané, etc. Ces paramètres sont stockés dans <code>localStorage</code> et lus par <code>index.html</code>.</p>
 
-    <div style="margin-top:12px">
-      <strong>Statut actuel :</strong> <span id="statusBadge" class="status">...</span>
-    </div>
+  <!-- --- BOUTONS ON/OFF EN HAUT POUR TOI --- -->
+  <div id="adminPanel">
+    <button id="btnSetOn" class="btn">DEV = ON</button>
+    <button id="btnSetOff" class="btn btn-danger">DEV = OFF</button>
+  </div>
 
-    <div style="margin-top:10px">
-      <label><strong>Mot de passe (optionnel)</strong> — pour sécuriser l'accès</label><br/>
-      <input id="pw" type="password" placeholder="Laisse vide si tu veux pas de mot de passe">
-      <button id="btnUnlock">Entrer</button>
-      <div class="note">Si tu veux un accès rapide local, laisse le champ vide puis clique "Entrer".</div>
-    </div>
-
-    <div id="mainControls" style="display:none" class="controls">
-      <div class="row">
-        <button id="btnSetOn" class="big">Mettre DEV = OFF</button>
-        <button id="btnSetOff" class="big danger">Mettre DEV = OFF</button>
-        <button id="btnGiveMoney" class="big">Donner 1 000 000 €</button>
-        <button id="btnUnlockAll" class="big">Unlock ALL events</button>
-      </div>
-
-      <div class="row" style="margin-top:10px">
-        <button id="btnInstant" class="big">Activer lancement instantané</button>
-        <button id="btnInstantOff" class="big danger">Désactiver instantané</button>
-        <button id="btnClearFlags" class="big">Réinitialiser flags dev</button>
-      </div>
-
-      <div class="note">
-        <strong>Remarques :</strong>
-        <ul style="margin:6px 0 0 18px;color:#9fb0c3">
-          <li>Le flag principal : <code>makeaevent_dev</code> = "on" / "off".</li>
-          <li>Autres flags utilisés : <code>makeaevent_cheats_money</code> (nombre), <code>makeaevent_unlocked_all</code> (true/false), <code>makeaevent_instant_launch</code> (true/false).</li>
-          <li>Quand <code>makeaevent_dev</code> = "off", tu peux afficher une page « site fermé » pour les joueurs (voir instructions).</li>
-        </ul>
-      </div>
-    </div>
-
-    <div id="closedMsg" style="display:none;margin-top:18px">
-      <h2 style="margin:0;color:#ffd6d6">SITE FERMÉ</h2>
-      <p class="muted">Le site est temporairement fermé — il sera bientôt réouvert.</p>
-    </div>
+  <!-- --- CONTENU PRINCIPAL POUR LES JOUEURS --- -->
+  <div class="container">
+    <h1>⚠️ Désolé !</h1>
+    <p>Un développeur a fermé le site temporairement.</p>
+    <p>Il sera bientôt rouvert. Merci de patienter !</p>
   </div>
 
 <script>
-  // --- simple password (client-side) to show controls (not secure on remote servers) ---
-  const btnUnlock = document.getElementById('btnUnlock');
-  const pw = document.getElementById('pw');
-  const mainControls = document.getElementById('mainControls');
-  const statusBadge = document.getElementById('statusBadge');
-  const closedMsg = document.getElementById('closedMsg');
+  // --- ON/OFF DEV FLAG ---
+  const btnSetOn = document.getElementById('btnSetOn');
+  const btnSetOff = document.getElementById('btnSetOff');
 
-  function readDevFlag(){
-    const v = localStorage.getItem('makeaevent_dev') || 'on'; // default ON
-    return v;
-  }
-  function refreshStatusUI(){
-    const v = readDevFlag();
-    statusBadge.textContent = v.toUpperCase();
-    statusBadge.className = 'status';
-    if(v === 'off'){ statusBadge.classList.add('closed'); }
-    if(v === 'off'){ closedMsg.style.display='block'; } else { closedMsg.style.display='none'; }
-  }
-
-  btnUnlock.addEventListener('click', ()=>{
-    // mot de passe client-side optionnel — change 'letmein' to your password if you want
-    const secret = 'letmein'; // change or leave blank
-    if(pw.value === '' || pw.value === secret){
-      mainControls.style.display = 'block';
-      refreshStatusUI();
-    } else {
-      alert('Mot de passe incorrect');
-    }
-  });
-
-  // Controls
-  document.getElementById('btnSetOn').addEventListener('click', ()=>{
+  btnSetOn.addEventListener('click', ()=>{
     localStorage.setItem('makeaevent_dev','on');
-    refreshStatusUI();
-    alert('DEV set to ON');
+    alert('DEV = ON. Le site sera accessible dès que vous rechargez index.html.');
   });
-  document.getElementById('btnSetOff').addEventListener('click', ()=>{
+
+  btnSetOff.addEventListener('click', ()=>{
     localStorage.setItem('makeaevent_dev','off');
-    refreshStatusUI();
-    alert('DEV set to OFF');
+    alert('DEV = OFF. Le site restera fermé pour les joueurs.');
   });
-
-  document.getElementById('btnGiveMoney').addEventListener('click', ()=>{
-    localStorage.setItem('makeaevent_cheats_money', String(1000000));
-    alert('Argent ajouté au flag (1 000 000). Les joueurs devront recharger la page pour le récupérer.');
-  });
-
-  document.getElementById('btnUnlockAll').addEventListener('click', ()=>{
-    localStorage.setItem('makeaevent_unlocked_all','true');
-    alert('Tout débloqué (flag). Les joueurs doivent recharger la page.');
-  });
-
-  document.getElementById('btnInstant').addEventListener('click', ()=>{
-    localStorage.setItem('makeaevent_instant_launch','true');
-    alert('Lancement instantané activé (flag).');
-  });
-  document.getElementById('btnInstantOff').addEventListener('click', ()=>{
-    localStorage.removeItem('makeaevent_instant_launch');
-    alert('Lancement instantané désactivé.');
-  });
-
-  document.getElementById('btnClearFlags').addEventListener('click', ()=>{
-    localStorage.removeItem('makeaevent_cheats_money');
-    localStorage.removeItem('makeaevent_unlocked_all');
-    localStorage.removeItem('makeaevent_instant_launch');
-    localStorage.setItem('makeaevent_dev','off');
-    refreshStatusUI();
-    alert('Flags réinitialisés (dev -> off).');
-  });
-
-  // show current on load
-  refreshStatusUI();
 </script>
 </body>
 </html>
