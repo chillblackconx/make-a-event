@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Make a Event 3.0</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make a Event 4.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -45,8 +45,12 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
 .r-epic{color:#8e24aa;border:1px solid rgba(142,36,170,0.12);}
 .r-leg{color:#fbc02d;border:1px solid rgba(251,192,45,0.12);}
 .r-myth{color:#e53935;border:1px solid rgba(229,57,53,0.12);}
-.r-rich{background:linear-gradient(90deg,#ff3b3b,#ff8a00,#ffd600,#00c853,#00b0ff,#651fff);-webkit-background-clip:text;color:transparent;font-weight:800;}
-.r-pro{background:linear-gradient(90deg,#bbbbbb,#111111);-webkit-background-clip:text;color:transparent;font-weight:800;}
+.r-dev-special{
+  background: linear-gradient(90deg, red, yellow);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
 .card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;}
 .small{font-size:13px;color:var(--muted);}
 .controls{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:6px;}
@@ -61,33 +65,45 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
 </head>
 <body data-theme="light">
 <div class="app">
-  <!-- LEFT: create -->
+  <!-- LEFT: Company / Event -->
   <section class="panel">
     <div class="header">
-      <div><div class="title">Créer un événement</div><div class="sub">Capital: <span id="money">5000</span> €</div></div>
+      <div><div class="title">Make a Event 4.0</div><div class="sub">Capital: <span id="money">5000</span> €</div></div>
       <div><button id="themeToggle" class="btn btn-small">Mode Sombre</button></div>
     </div>
-    <div class="preview mini">
-      <div class="logo" id="previewLogo"><span style="opacity:0.35">Logo</span></div>
-      <div class="stats">
-        <div class="stat"><strong id="previewName">Nom de l'événement</strong></div>
-        <div class="stat" id="previewType">Type — Commun</div>
-        <div class="stat" id="previewProfit">Profit estimé: 0 €</div>
+
+    <!-- Company creation -->
+    <div id="companyPanel">
+      <label>Nom de votre compagnie</label><input id="companyName" type="text" placeholder="Ex: Dev Events Inc">
+      <label>Logo de la compagnie</label><input id="companyLogo" type="file" accept="image/*">
+      <label>Description</label><textarea id="companyDesc" placeholder="Votre entreprise en quelques mots..."></textarea>
+      <button id="btnCreateCompany" class="btn">Créer la compagnie</button>
+    </div>
+
+    <!-- Event creation (hidden au début) -->
+    <div id="eventPanel" style="display:none;">
+      <div class="preview mini">
+        <div class="logo" id="previewLogo"><span style="opacity:0.35">Logo</span></div>
+        <div class="stats">
+          <div class="stat"><strong id="previewName">Nom de l'événement</strong></div>
+          <div class="stat" id="previewType">Type — Commun</div>
+          <div class="stat" id="previewProfit">Profit estimé: 0 €</div>
+        </div>
       </div>
+      <label>Nom</label><input id="inputName" type="text" placeholder="Ex : Summer Fest">
+      <label>Logo (image)</label><input id="inputLogo" type="file" accept="image/*">
+      <label>Description</label><textarea id="inputDesc" placeholder="Texte qui attire (max 200 signes)"></textarea>
+      <div class="row">
+        <div class="col"><label>Type d'événement</label><select id="inputType"><option value="concert">Concert</option><option value="conference">Conférence</option><option value="exposition">Exposition</option><option value="fete">Fête</option><option value="atelier">Atelier</option></select></div>
+        <div class="col"><label>Prix du ticket (€)</label><input id="inputPrice" type="number" min="1" value="15"></div>
+      </div>
+      <label>Budget marketing (€)</label><input id="inputMarketing" type="number" min="0" value="50">
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button id="btnAdd" class="btn">Créer & Ajouter</button>
+        <button id="btnPreview" class="btn ghost">Mettre à jour aperçu</button>
+      </div>
+      <div class="controls" style="margin-top:12px;"><div class="muted">Cartes sauvegardées : <span id="count">0</span></div></div>
     </div>
-    <label>Nom</label><input id="inputName" type="text" placeholder="Ex : Summer Fest">
-    <label>Logo (image)</label><input id="inputLogo" type="file" accept="image/*">
-    <label>Description</label><textarea id="inputDesc" placeholder="Texte qui attire (max 200 signes)"></textarea>
-    <div class="row">
-      <div class="col"><label>Type d'événement</label><select id="inputType"><option value="concert">Concert</option><option value="conference">Conférence</option><option value="exposition">Exposition</option><option value="fete">Fête</option><option value="atelier">Atelier</option></select></div>
-      <div class="col"><label>Prix du ticket (€)</label><input id="inputPrice" type="number" min="1" value="15"></div>
-    </div>
-    <label>Budget marketing (€)</label><input id="inputMarketing" type="number" min="0" value="50">
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button id="btnAdd" class="btn">Créer & Ajouter</button>
-      <button id="btnPreview" class="btn ghost">Mettre à jour aperçu</button>
-    </div>
-    <div class="controls" style="margin-top:12px;"><div class="muted">Cartes sauvegardées : <span id="count">0</span></div></div>
   </section>
 
   <!-- RIGHT: inventory -->
@@ -95,10 +111,8 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
     <div class="panel">
       <div class="inventory-header">
         <div><div class="title">Inventaire</div><div class="sub">Mes événements</div></div>
-        <div style="display:flex;gap:8px;align-items:center;"><input id="search" class="search" placeholder="Rechercher nom ou type"><button id="clearAll" class="btn ghost">Supprimer tout</button></div>
       </div>
       <div class="grid" id="grid"></div>
-      <div style="margin-top:12px;display:flex;justify-content:flex-end;"><div class="muted">Données stockées localement</div></div>
     </div>
   </section>
 </div>
@@ -122,10 +136,11 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
         <div><strong>Profit estimé:</strong> <span id="modalProfit"></span></div>
         <div><strong>Prix ticket:</strong> <span id="modalPrice"></span> €</div>
         <div><strong>Marketing:</strong> <span id="modalMarketing"></span> €</div>
+        <div><strong>État:</strong> <span id="modalStatus">Arrêté</span></div>
       </div>
       <div style="display:flex;gap:8px;margin-top:14px;">
         <button id="btnDelete" class="btn ghost">Supprimer</button>
-        <button id="btnLaunch" class="btn">Lancer / Acheter</button>
+        <button id="btnToggle" class="btn">Lancer / Stop</button>
         <button id="btnClose" class="btn">Fermer</button>
       </div>
     </div>
@@ -135,71 +150,77 @@ textarea{resize:vertical;min-height:78px;max-height:180px;}
 
 <script>
 // ====== Logic ======
-const LS_KEY = 'makeaevent3';
-let collection = [], money = 5000;
+const LS_KEY = 'makeaevent4';
+let collection = [], money = 5000, company = null;
 const el={};
-['inputName','inputLogo','inputDesc','inputType','inputPrice','inputMarketing','previewLogo','previewName','previewType','previewProfit','btnAdd','btnPreview','grid','count','modal','modalClose','modalTitle','modalLogo','modalName','modalType','modalDesc','modalProfit','modalPrice','modalMarketing','modalBadge','btnDelete','btnClose','btnLaunch','search','clearAll','themeToggle','money'].forEach(id=>el[id]=document.getElementById(id));
+['inputName','inputLogo','inputDesc','inputType','inputPrice','inputMarketing','previewLogo','previewName','previewType','previewProfit','btnAdd','btnPreview','grid','count','modal','modalClose','modalTitle','modalLogo','modalName','modalType','modalDesc','modalProfit','modalPrice','modalMarketing','modalBadge','btnDelete','btnClose','btnToggle','companyPanel','eventPanel','companyName','companyLogo','companyDesc','btnCreateCompany','themeToggle','money','modalStatus'].forEach(id=>el[id]=document.getElementById(id));
+let currentFileDataUrl = null, currentModalId = null;
 
-let currentFileDataUrl = null;
+// Company creation
+el.btnCreateCompany.addEventListener('click',()=>{
+  const name = el.companyName.value.trim(); if(!name) return alert('Nom obligatoire'); 
+  const desc = el.companyDesc.value.trim(); 
+  const logoFile = el.companyLogo.files[0]; 
+  if(!logoFile) return alert('Logo obligatoire');
+  const reader = new FileReader(); reader.onload = ev=>{
+    company={name,desc,logo:ev.target.result}; 
+    el.companyPanel.style.display='none'; 
+    el.eventPanel.style.display='block'; 
+    save();
+  }; reader.readAsDataURL(logoFile);
+});
+
+// Logo preview
 el.inputLogo.addEventListener('change', e=>{
   const f = e.target.files[0]; if(!f){ currentFileDataUrl=null; el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; return; }
   const reader = new FileReader(); reader.onload=ev=>{currentFileDataUrl=ev.target.result; el.previewLogo.innerHTML='<img src="'+currentFileDataUrl+'">';}
   reader.readAsDataURL(f);
 });
 
+// Utils
 function uid(){ return 'ev_'+Math.random().toString(36).slice(2,9); }
-
 const baseByType={concert:200,conference:120,exposition:150,fete:180,atelier:90};
 function computeParticipants(type,desc,marketing,price){ const base=baseByType[type]||100; const attractivity=1+Math.min((desc||'').length/100,0.5)+Math.min(marketing/500,0.5); const priceEffect=Math.max(0.05,1.6-price/25); return Math.floor(base*attractivity*priceEffect);}
 function computeProfit(type,desc,marketing,price){ const participants=computeParticipants(type,desc,marketing,price); const base=baseByType[type]||100; const costFixed=base*2; const profit=Math.max(0,Math.floor((participants*price)-marketing-costFixed)); return {participants,profit};}
-function rarityFromProfit(p){if(p>8000)return'pro';if(p>4000)return'rich';if(p>2000)return'myth';if(p>1000)return'leg';if(p>500)return'epic';if(p>=200)return'rare';return'common';}
-function rarityLabel(r){const map={common:'Commun',rare:'Rare',epic:'Épique',leg:'Légendaire',myth:'Mythique',rich:'Riche',pro:'Pro'};return map[r]||r;}
+function computeRarity(name,profit){ if(name.toLowerCase().includes('dev')) return 'dev-special'; if(profit>8000) return 'pro'; if(profit>4000) return 'rich'; if(profit>2000) return 'myth'; if(profit>1000) return 'leg'; if(profit>500) return 'epic'; if(profit>=200) return 'rare'; return 'common';}
+function rarityLabel(r){ const map={common:'Commun',rare:'Rare',epic:'Épique',leg:'Légendaire',myth:'Mythique',rich:'Riche',pro:'Pro','dev-special':'Dev'}; return map[r]||r;}
 function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
 
-function updatePreview(){const name=el.inputName.value.trim()||'Nom de l\'événement'; const desc=el.inputDesc.value.trim()||''; const type=el.inputType.value; const price=Math.max(1,Number(el.inputPrice.value)||1); const marketing=Math.max(0,Number(el.inputMarketing.value)||0); const {participants,profit}=computeProfit(type,desc,marketing,price); el.previewName.textContent=name; el.previewType.textContent=type.charAt(0).toUpperCase()+type.slice(1)+' — '+rarityLabel(rarityFromProfit(profit)); el.previewProfit.textContent=`Profit estimé: ${profit.toLocaleString()} €`; if(!currentFileDataUrl) el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>';}
+function updatePreview(){ const name=el.inputName.value.trim()||'Nom de l\'événement'; const desc=el.inputDesc.value.trim()||''; const type=el.inputType.value; const price=Math.max(1,Number(el.inputPrice.value)||1); const marketing=Math.max(0,Number(el.inputMarketing.value)||0); const {participants,profit}=computeProfit(type,desc,marketing,price); const rarity=computeRarity(name,profit); el.previewName.textContent=name; el.previewType.textContent=type.charAt(0).toUpperCase()+type.slice(1)+' — '+rarityLabel(rarity); el.previewProfit.textContent=`Profit estimé: ${profit.toLocaleString()} €`; if(!currentFileDataUrl) el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; }
 el.btnPreview.addEventListener('click',updatePreview);
 
-function save(){localStorage.setItem(LS_KEY,JSON.stringify({collection,money})); render(); updateMoney();}
-function load(){const raw=localStorage.getItem(LS_KEY); if(raw)try{const d=JSON.parse(raw); collection=d.collection||[]; money=d.money||5000;}catch(e){collection=[];money=5000;} render(); updateMoney();}
-
-el.btnAdd.addEventListener('click',()=>{
-  const name=el.inputName.value.trim(); if(!name)return alert('Donne un nom'); const desc=el.inputDesc.value.trim(); const type=el.inputType.value; const price=Math.max(1,Number(el.inputPrice.value)||1); const marketing=Math.max(0,Number(el.inputMarketing.value)||0); const {participants,profit}=computeProfit(type,desc,marketing,price); const rarity=rarityFromProfit(profit);
-  const item={id:uid(),name,desc,type,price,marketing,participants,profit,rarity,logo:currentFileDataUrl||null,created:Date.now()}; collection.unshift(item); save(); el.inputName.value=''; el.inputDesc.value=''; el.inputPrice.value=15; el.inputMarketing.value=50; el.inputLogo.value=''; currentFileDataUrl=null; el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; updatePreview();
-});
-
-/* Render */
-function makeBadgeHtml(r){if(r==='rich')return`<span class="r-rich">Riche</span>`; if(r==='pro')return`<span class="r-pro">Pro</span>`; const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth'}[r]||'r-common'; return `<span class="badge ${cls}">${rarityLabel(r)}</span>`;}
-function render(){el.grid.innerHTML=''; collection.forEach(i=>{
-  const div=document.createElement('div'); div.className='card';
-  div.innerHTML=`<div class="top"><div class="logo">${i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'}</div>
-  <div class="meta"><div class="name">${escapeHTML(i.name)}</div><div class="desc">${escapeHTML(i.desc)}</div><div class="small">Participants: ${i.participants}</div></div></div>
-  <div class="card-footer">${makeBadgeHtml(i.rarity)} <button class="btn btn-small" onclick="showDetails('${i.id}')">Détails</button></div>`;
-  el.grid.appendChild(div);
-}); el.count.textContent=collection.length;}
+// Save/load
+function save(){localStorage.setItem(LS_KEY,JSON.stringify({collection,money,company})); render(); updateMoney();}
+function load(){const raw=localStorage.getItem(LS_KEY); if(raw)try{const d=JSON.parse(raw); collection=d.collection||[]; money=d.money||5000; company=d.company||null; if(company){el.companyPanel.style.display='none'; el.eventPanel.style.display='block';} }catch(e){collection=[];money=5000; company=null;} render(); updateMoney(); }
 function updateMoney(){el.money.textContent=money.toLocaleString();}
 
-/* Modal logic */
-let currentModalId=null;
-window.showDetails=function(id){currentModalId=id; const i=collection.find(x=>x.id===id); if(!i)return; el.modalTitle.textContent=i.name; el.modalName.textContent=i.name; el.modalType.textContent=i.type+' — '+rarityLabel(i.rarity); el.modalDesc.textContent=i.desc; el.modalProfit.textContent=i.profit.toLocaleString()+' €'; el.modalPrice.textContent=i.price; el.modalMarketing.textContent=i.marketing; el.modalBadge.innerHTML=makeBadgeHtml(i.rarity); el.modalLogo.innerHTML=i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'; el.modal.style.display='flex';}
+// Add event
+el.btnAdd.addEventListener('click',()=>{
+  if(!company){alert('Créer une compagnie d\'abord !'); return;}
+  const name=el.inputName.value.trim(); if(!name)return alert('Nom obligatoire'); 
+  const desc=el.inputDesc.value.trim(); 
+  const type=el.inputType.value; 
+  const price=Math.max(1,Number(el.inputPrice.value)||1); 
+  const marketing=Math.max(0,Number(el.inputMarketing.value)||0); 
+  const {participants,profit}=computeProfit(type,desc,marketing,price); 
+  const rarity=computeRarity(name,profit);
+  const item={id:uid(),name,desc,type,price,marketing,participants,profit,rarity,logo:currentFileDataUrl||null,status:'stopped'}; 
+  collection.unshift(item); save(); el.inputName.value=''; el.inputDesc.value=''; el.inputPrice.value=15; el.inputMarketing.value=50; el.inputLogo.value=''; currentFileDataUrl=null; el.previewLogo.innerHTML='<span style="opacity:.35">Logo</span>'; updatePreview();
+});
+
+// Render
+function makeBadgeHtml(r){if(r==='dev-special')return`<span class="r-dev-special">DEV</span>`; const cls={common:'r-common',rare:'r-rare',epic:'r-epic',leg:'r-leg',myth:'r-myth',rich:'r-rich',pro:'r-pro'}[r]||'r-common'; return `<span class="badge ${cls}">${rarityLabel(r)}</span>`;}
+function render(){el.grid.innerHTML=''; collection.forEach(i=>{ const div=document.createElement('div'); div.className='card'; div.innerHTML=`<div class="top"><div class="logo">${i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'}</div><div class="meta"><div class="name">${escapeHTML(i.name)}</div><div class="desc">${escapeHTML(i.desc)}</div><div class="small">Participants: ${i.participants}</div></div></div><div class="card-footer">${makeBadgeHtml(i.rarity)} <button class="btn btn-small" onclick="showDetails('${i.id}')">Détails</button></div>`; el.grid.appendChild(div); }); el.count.textContent=collection.length;}
+
+// Modal
+window.showDetails=function(id){currentModalId=id; const i=collection.find(x=>x.id===id); if(!i)return; el.modalTitle.textContent=i.name; el.modalName.textContent=i.name; el.modalType.textContent=i.type+' — '+rarityLabel(i.rarity); el.modalDesc.textContent=i.desc; el.modalProfit.textContent=i.profit.toLocaleString()+' €'; el.modalPrice.textContent=i.price; el.modalMarketing.textContent=i.marketing; el.modalBadge.innerHTML=makeBadgeHtml(i.rarity); el.modalLogo.innerHTML=i.logo?'<img src="'+i.logo+'">':'<span style="opacity:.35">Logo</span>'; el.modalStatus.textContent=i.status==='running'?'En cours':'Arrêté'; el.modal.style.display='flex';}
 el.modalClose.onclick=()=>el.modal.style.display='none';
 el.btnClose.onclick=()=>el.modal.style.display='none';
-el.btnDelete.onclick=()=>{
-  if(!currentModalId)return; collection=collection.filter(x=>x.id!==currentModalId); save(); el.modal.style.display='none';
-}
-el.btnLaunch.onclick=()=>{
-  if(!currentModalId)return; const i=collection.find(x=>x.id===currentModalId); if(!i)return;
-  const cost=i.price+i.marketing; if(cost>money){alert('Pas assez d’argent pour lancer cet événement'); return;}
-  money-=cost; money+=i.profit; save(); alert(`Événement lancé ! Gagné ${i.profit.toLocaleString()} €`); el.modal.style.display='none';
-}
+el.btnDelete.onclick=()=>{if(!currentModalId)return; collection=collection.filter(x=>x.id!==currentModalId); save(); el.modal.style.display='none';}
+el.btnToggle.onclick=()=>{if(!currentModalId)return; const i=collection.find(x=>x.id===currentModalId); if(!i)return; if(i.status==='stopped'){ const cost=i.price+i.marketing; if(cost>money){alert('Pas assez d’argent'); return;} money-=cost; i.status='running'; alert(`Événement lancé !`);} else { i.status='stopped'; alert('Événement arrêté'); } save(); el.modalStatus.textContent=i.status==='running'?'En cours':'Arrêté'; save();}
 
-/* Search & clear */
-el.search.addEventListener('input',()=>{const val=el.search.value.toLowerCase(); Array.from(el.grid.children).forEach((card,i)=>{card.style.display=(collection[i].name.toLowerCase().includes(val)||collection[i].type.toLowerCase().includes(val))?'flex':'none';})});
-el.clearAll.addEventListener('click',()=>{if(confirm('Supprimer tout?')){collection=[];save();}});
-
-/* Theme toggle */
-el.themeToggle.addEventListener('click',()=>{
-  const t=document.body.getAttribute('data-theme')==='light'?'dark':'light'; document.body.setAttribute('data-theme',t); el.themeToggle.textContent=t==='dark'?'Mode Clair':'Mode Sombre';
-});
+// Theme
+el.themeToggle.addEventListener('click',()=>{ const t=document.body.getAttribute('data-theme')==='light'?'dark':'light'; document.body.setAttribute('data-theme',t); el.themeToggle.textContent=t==='dark'?'Mode Clair':'Mode Sombre';});
 
 load();
 updatePreview();
