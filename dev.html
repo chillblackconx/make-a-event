@@ -9,20 +9,10 @@
   .container{max-width:600px;padding:20px;}
   h1{font-size:28px;color:#ffd6d6;margin-bottom:10px;}
   p{font-size:18px;color:#a9bdcf;}
-  .btn{margin:8px;padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:700;color:#042033;background:#00aaff;}
-  .btn-danger{background:#ff6b6b;color:#fff;}
-  #adminPanel{position:absolute;top:10px;right:10px;}
 </style>
 </head>
 <body>
 
-  <!-- --- BOUTONS ON/OFF EN HAUT POUR TOI --- -->
-  <div id="adminPanel">
-    <button id="btnSetOn" class="btn">DEV = ON</button>
-    <button id="btnSetOff" class="btn btn-danger">DEV = OFF</button>
-  </div>
-
-  <!-- --- CONTENU PRINCIPAL POUR LES JOUEURS --- -->
   <div class="container">
     <h1>⚠️ Désolé !</h1>
     <p>Un développeur a fermé le site temporairement.</p>
@@ -30,19 +20,21 @@
   </div>
 
 <script>
-  // --- ON/OFF DEV FLAG ---
-  const btnSetOn = document.getElementById('btnSetOn');
-  const btnSetOff = document.getElementById('btnSetOff');
+  // --- LOGIQUE ON/OFF LE PLUS HAUT POSSIBLE ---
+  (function(){
+    // Définit ici le flag ON/OFF directement dans le code
+    // Changez 'off' pour 'on' si vous voulez rouvrir le site
+    const devFlag = 'on'; // <-- MODIFIEZ ICI: 'on' = site ouvert, 'off' = site fermé
+    localStorage.setItem('makeaevent_dev', devFlag);
 
-  btnSetOn.addEventListener('click', ()=>{
-    localStorage.setItem('makeaevent_dev','on');
-    alert('DEV = ON. Le site sera accessible dès que vous rechargez index.html.');
-  });
-
-  btnSetOff.addEventListener('click', ()=>{
-    localStorage.setItem('makeaevent_dev','off');
-    alert('DEV = OFF. Le site restera fermé pour les joueurs.');
-  });
+    // Si le site est fermé, le joueur reste sur cette page
+    if(devFlag === 'off'){
+      console.log('Site fermé pour les joueurs');
+    } else {
+      console.log('DEV ON : site accessible, rediriger vers index.html si nécessaire');
+      // Par exemple : window.location.href = 'index.html';
+    }
+  })();
 </script>
 </body>
 </html>
