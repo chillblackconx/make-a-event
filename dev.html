@@ -1,40 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Site fermé — Make a Event</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make a Event — Dev Control</title>
 <style>
-  body{margin:0;font-family:Arial,sans-serif;background:#0b1220;color:#e6eef8;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;}
-  .container{max-width:600px;padding:20px;}
-  h1{font-size:28px;color:#ffd6d6;margin-bottom:10px;}
-  p{font-size:18px;color:#a9bdcf;}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+:root {
+  --bg:#050505;
+  --panel:#0d0d0d;
+  --accent:#ff0055;
+  --text:#f0f0f0;
+}
+body {
+  font-family:'Orbitron',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  margin:0;
+}
+h1{color:var(--accent);margin-bottom:10px;}
+.panel{
+  background:var(--panel);
+  padding:30px;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(255,0,85,.3);
+}
+button{
+  font-family:'Orbitron';
+  margin-top:20px;
+  background:var(--accent);
+  border:none;
+  padding:10px 20px;
+  border-radius:10px;
+  color:white;
+  cursor:pointer;
+  transition:.2s;
+}
+button:hover{opacity:.8;}
+.status{
+  font-weight:bold;
+  font-size:1.2em;
+  margin-top:10px;
+}
+.offpage{
+  text-align:center;
+  color:var(--text);
+  padding:50px;
+}
+.offpage h2{
+  color:var(--accent);
+  font-size:2em;
+}
 </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>⚠️ Désolé !</h1>
-    <p>Un développeur a fermé le site temporairement.</p>
-    <p>Il sera bientôt rouvert. Merci de patienter !</p>
-  </div>
+<div id="devPanel" class="panel">
+  <h1>Make a Event — DEV Control</h1>
+  <p>État actuel du site :</p>
+  <div class="status" id="statusLabel">Chargement...</div>
+  <button id="toggleBtn">Basculer ON / OFF</button>
+  <button id="goSite">Aller sur le site</button>
+</div>
+
+<div id="offPage" class="offpage" style="display:none;">
+  <h2>🚧 Site fermé temporairement</h2>
+  <p>Désolé, un développeur a fermé le site.<br>
+  Il sera bientôt de retour !</p>
+</div>
 
 <script>
-  // --- LOGIQUE ON/OFF LE PLUS HAUT POSSIBLE ---
-  (function(){
-    // Définit ici le flag ON/OFF directement dans le code
-    // Changez 'off' pour 'on' si vous voulez rouvrir le site
-    const devFlag = 'off'; // <-- MODIFIEZ ICI: 'on' = site ouvert, 'off' = site fermé
-    localStorage.setItem('makeaevent_dev', devFlag);
+const statusLabel=document.getElementById('statusLabel');
+const toggleBtn=document.getElementById('toggleBtn');
+const goSite=document.getElementById('goSite');
+const devPanel=document.getElementById('devPanel');
+const offPage=document.getElementById('offPage');
 
-    // Si le site est fermé, le joueur reste sur cette page
-    if(devFlag === 'off'){
-      console.log('Site fermé pour les joueurs');
-    } else {
-      console.log('DEV ON : site accessible, rediriger vers index.html si nécessaire');
-      // Par exemple : window.location.href = 'index.html';
-    }
-  })();
+function updateUI(){
+  const status=localStorage.getItem('SITE_STATUS')||'ON';
+  if(status==='ON'){
+    statusLabel.textContent='🟢 En ligne';
+    devPanel.style.display='block';
+    offPage.style.display='none';
+  }else{
+    statusLabel.textContent='🔴 Hors ligne';
+    devPanel.style.display='block';
+    offPage.style.display='none';
+  }
+}
+toggleBtn.onclick=()=>{
+  const current=localStorage.getItem('SITE_STATUS')||'ON';
+  const next=current==='ON'?'OFF':'ON';
+  localStorage.setItem('SITE_STATUS',next);
+  updateUI();
+};
+goSite.onclick=()=>{
+  const status=localStorage.getItem('SITE_STATUS')||'ON';
+  if(status==='OFF'){
+    devPanel.style.display='none';
+    offPage.style.display='block';
+  }else{
+    window.location.href='index.html';
+  }
+};
+updateUI();
 </script>
 </body>
 </html>
